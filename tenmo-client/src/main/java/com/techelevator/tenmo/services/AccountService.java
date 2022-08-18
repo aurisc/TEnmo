@@ -7,12 +7,10 @@ import com.techelevator.tenmo.model.User;
 import com.techelevator.util.BasicLogger;
 import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 public class AccountService {
 
@@ -53,6 +51,11 @@ public class AccountService {
         return users;
     }
 
+    public User getUserById(Long id) {
+        User user = null;
+        return user;
+    }
+
     public Transfer createTransfer(Transfer transfer) {
         HttpEntity<Transfer> entity = makeTransferEntity(transfer);
         Transfer returnedTransfer = null;
@@ -65,11 +68,12 @@ public class AccountService {
         return returnedTransfer;
     }
 
-    public Account[] listAccounts() {
+    public Account[] getAccountsForUser(User user) {
         Account[] accounts = null;
         try {
             ResponseEntity<Account[]> response =
-                    restTemplate.exchange(baseUrl + "account", HttpMethod.GET, makeAuthEntity(), Account[].class);
+                    restTemplate.exchange(baseUrl + "account/user/" + user.getId(),
+                            HttpMethod.GET, makeAuthEntity(), Account[].class);
             accounts = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());

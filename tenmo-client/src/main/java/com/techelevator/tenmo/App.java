@@ -107,16 +107,30 @@ public class App {
         int menuSelection = consoleService.promptForInt("Enter ID of user you are sending to: ");
         if (menuSelection != 0) {
             Long recipientId = (long) menuSelection;
-            BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount: ");
-            if (amountToSend.compareTo(new BigDecimal(0)) > 0) {
-                printUserAccounts();
-                Long accountSelection = (long) consoleService.promptForInt("Enter ID of account sending from: ");
-                Account fromAccount = accountService.getAccountById(accountSelection);
-                if (fromAccount != null) {
-                    Transfer newTransfer = new Transfer();
-                    newTransfer.setTransferTypeId(TransferType.SEND.getTypeId());
-                    newTransfer.setTransferStatusId(TransferStatus.APPROVED.getStatusId());
-                    newTransfer.setAccountFrom(accountSelection);
+            if (!recipientId.equals(currentUser.getUser().getId())) {
+                User recipient = accountService.getUserById(recipientId);
+                printExternalAccounts(recipient);
+                Long recipientAccountId = (long) consoleService.promptForInt("Enter ID of account sending to: ");
+                Account toAccount = accountService.getAccountById(recipientAccountId);
+                if (toAccount != null) {
+                    BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount: ");
+                    if (amountToSend.compareTo(new BigDecimal(0)) > 0) {
+                        printUserAccounts();
+                        Long accountSelection = (long) consoleService.promptForInt("Enter ID of account sending from: ");
+                        Account fromAccount = accountService.getAccountById(accountSelection);
+                        if (fromAccount != null && fromAccount.getBalance().compareTo(amountToSend) >= 0) {
+                            Transfer newTransfer = new Transfer();
+                            newTransfer.setTransferTypeId(TransferType.SEND.getTypeId());
+                            newTransfer.setTransferStatusId(TransferStatus.APPROVED.getStatusId());
+                            newTransfer.setAccountFrom(fromAccount.getAccountId());
+                            newTransfer.setAccountTo(toAccount.getAccountId());
+                            newTransfer.setAmount(amountToSend);
+                            Transfer createdTransfer = accountService.createTransfer(newTransfer);
+                            if (createdTransfer == null) {
+                                consoleService.printErrorMessage();
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -135,9 +149,16 @@ public class App {
     }
 
     private void printUserAccounts() {
-        Account[] accounts = accountService.listAccounts();
+        Account[] accounts = accountService.getAccountsForUser(currentUser.getUser());
         for (Account account: accounts) {
             System.out.println("ID: " + account.getAccountId() + "Balance: " + account.getBalance());
+        }
+    }
+
+    private void printExternalAccounts(User user) {
+        Account[] accounts = accountService.getAccountsForUser(user);
+        for (Account account : accounts) {
+            System.out.println("ID: " + account.getAccountId());
         }
     }
 
