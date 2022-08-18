@@ -1,9 +1,7 @@
 package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.*;
-import com.techelevator.tenmo.services.AccountService;
-import com.techelevator.tenmo.services.AuthenticationService;
-import com.techelevator.tenmo.services.ConsoleService;
+import com.techelevator.tenmo.services.*;
 
 import java.math.BigDecimal;
 
@@ -116,6 +114,8 @@ public class App {
                 Account fromAccount = accountService.getAccountById(accountSelection);
                 if (fromAccount != null) {
                     Transfer newTransfer = new Transfer();
+                    newTransfer.setTransferTypeId(TransferType.SEND.getTypeId());
+                    newTransfer.setTransferStatusId(TransferStatus.APPROVED.getStatusId());
                     newTransfer.setAccountFrom(accountSelection);
                 }
             }
