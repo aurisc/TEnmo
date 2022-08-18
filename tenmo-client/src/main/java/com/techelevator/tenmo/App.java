@@ -1,9 +1,11 @@
 package com.techelevator.tenmo;
 
-import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.tenmo.model.UserCredentials;
+import com.techelevator.tenmo.model.*;
+import com.techelevator.tenmo.services.AccountService;
 import com.techelevator.tenmo.services.AuthenticationService;
 import com.techelevator.tenmo.services.ConsoleService;
+
+import java.math.BigDecimal;
 
 public class App {
 
@@ -11,7 +13,7 @@ public class App {
 
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
-   // private final
+    private final AccountService accountService = new AccountService(API_BASE_URL);
 
     private AuthenticatedUser currentUser;
 
@@ -56,6 +58,7 @@ public class App {
     private void handleLogin() {
         UserCredentials credentials = consoleService.promptForCredentials();
         currentUser = authenticationService.login(credentials);
+        accountService.setUser(currentUser);
         if (currentUser == null) {
             consoleService.printErrorMessage();
         }
@@ -86,7 +89,8 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-		// SELECT balance FROM account WHERE user_id = ?
+        BigDecimal balance = accountService.getBalance();
+        System.out.println("Current account balance: " + balance);
 	}
 
 	private void viewTransferHistory() {
@@ -101,12 +105,40 @@ public class App {
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
-		
+        printAllUsers();
+        int menuSelection = consoleService.promptForInt("Enter ID of user you are sending to: ");
+        if (menuSelection != 0) {
+            Long recipientId = (long) menuSelection;
+            BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount: ");
+            if (amountToSend.compareTo(new BigDecimal(0)) > 0) {
+                printUserAccounts();
+                Long accountSelection = (long) consoleService.promptForInt("Enter ID of account sending from: ");
+                Account fromAccount = accountService.getAccountById(accountSelection);
+                if (fromAccount != null) {
+                    Transfer newTransfer = new Transfer();
+                    newTransfer.setAccountFrom(accountSelection);
+                }
+            }
+        }
 	}
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
 		
 	}
+
+    private void printAllUsers() {
+        User[] users = accountService.getUsers();
+        for (User user : users) {
+            System.out.println("ID: " + user.getId() + "User Name: " + user.getUsername());
+        }
+    }
+
+    private void printUserAccounts() {
+        Account[] accounts = accountService.listAccounts();
+        for (Account account: accounts) {
+            System.out.println("ID: " + account.getAccountId() + "Balance: " + account.getBalance());
+        }
+    }
 
 }

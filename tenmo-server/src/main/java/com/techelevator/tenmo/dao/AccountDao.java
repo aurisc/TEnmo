@@ -9,7 +9,6 @@ import java.util.List;
 public interface AccountDao {
     //List<User> findAll();
     //User findByUsername(String username);
-    User userId();
-    BigDecimal getBalance(User userId);
+    BigDecimal getBalance(String userName);
 
 }
