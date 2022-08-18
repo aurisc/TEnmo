@@ -12,6 +12,7 @@ public class App {
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
     private final AccountService accountService = new AccountService(API_BASE_URL);
+    private final TransferService transferService = new TransferService(API_BASE_URL);
 
     private AuthenticatedUser currentUser;
 
@@ -57,6 +58,7 @@ public class App {
         UserCredentials credentials = consoleService.promptForCredentials();
         currentUser = authenticationService.login(credentials);
         accountService.setUser(currentUser);
+        transferService.setUser(currentUser);
         if (currentUser == null) {
             consoleService.printErrorMessage();
         }
@@ -125,7 +127,7 @@ public class App {
                             newTransfer.setAccountFrom(fromAccount.getAccountId());
                             newTransfer.setAccountTo(toAccount.getAccountId());
                             newTransfer.setAmount(amountToSend);
-                            Transfer createdTransfer = accountService.createTransfer(newTransfer);
+                            Transfer createdTransfer = transferService.createTransfer(newTransfer);
                             if (createdTransfer == null) {
                                 consoleService.printErrorMessage();
                             }
