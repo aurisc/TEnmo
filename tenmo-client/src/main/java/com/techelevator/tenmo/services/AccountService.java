@@ -43,7 +43,7 @@ public class AccountService {
         User[] users = null;
         try {
             ResponseEntity<User[]> response =
-                    restTemplate.exchange(baseUrl + "users", HttpMethod.GET, makeAuthEntity(), User[].class);
+                    restTemplate.exchange(baseUrl + "user", HttpMethod.GET, makeAuthEntity(), User[].class);
             users = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
@@ -53,6 +53,13 @@ public class AccountService {
 
     public User getUserById(Long id) {
         User user = null;
+        try {
+            ResponseEntity<User> response =
+                    restTemplate.exchange(baseUrl + "user/" + id, HttpMethod.GET, makeAuthEntity(), User.class);
+            user = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
         return user;
     }
 

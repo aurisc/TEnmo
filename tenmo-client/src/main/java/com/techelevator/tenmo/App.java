@@ -143,15 +143,19 @@ public class App {
 
     private void printAllUsers() {
         User[] users = accountService.getUsers();
-        for (User user : users) {
-            System.out.println("ID: " + user.getId() + "User Name: " + user.getUsername());
+        if (users != null) {
+            for (User user : users) {
+                System.out.println("ID: " + user.getId() + "User Name: " + user.getUsername());
+            }
         }
     }
 
     private void printUserAccounts() {
         Account[] accounts = accountService.getAccountsForUser(currentUser.getUser());
-        for (Account account: accounts) {
-            System.out.println("ID: " + account.getAccountId() + "Balance: " + account.getBalance());
+        if (accounts != null) {
+            for (Account account : accounts) {
+                System.out.println("ID: " + account.getAccountId() + "Balance: " + account.getBalance());
+            }
         }
     }
 

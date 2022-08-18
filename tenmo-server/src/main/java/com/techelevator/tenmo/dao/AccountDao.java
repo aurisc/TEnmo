@@ -10,5 +10,6 @@ public interface AccountDao {
     //List<User> findAll();
     //User findByUsername(String username);
     BigDecimal getBalance(String userName);
+    Account[] getAccountsByUserId(Long userId);
 
 }
