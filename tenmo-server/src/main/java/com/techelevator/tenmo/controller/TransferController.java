@@ -34,28 +34,28 @@ public class TransferController {
     @RequestMapping(path = "/send", method = RequestMethod.POST)
     public void sendTransfer(@Valid @RequestBody Transfer transfer, Principal principal) throws TransferException {
         //compareTo =0 equal, 1 greater than, -1 less than
-        if(transfer.getAmount().compareTo(new BigDecimal(0)) < 1) {
+        if (transfer.getAmount().compareTo(new BigDecimal(0)) < 1) {
             throw new TransferException("Transfer amount should be greater than zero");
         }
         User user = userDao.findByUsername(principal.getName());
-        if(user==null) {
+        if (user == null) {
             throw new TransferException("User not found");
         }
         Account fromAccount = accountDao.getAccountsById(transfer.getAccountFrom());
-        if(fromAccount==null) {
+        if (fromAccount == null) {
             throw new TransferException("From account not found");
         }
-        if(fromAccount.getUser_id().compareTo(user.getId())!=0) {
+        if (fromAccount.getUser_id().compareTo(user.getId()) != 0) {
             throw new TransferException("You can only send TE bucks from your own account");
         }
-        if(fromAccount.getBalance().compareTo(transfer.getAmount())<0) {
+        if (fromAccount.getBalance().compareTo(transfer.getAmount()) < 0) {
             throw new TransferException("You do not have enough TE bucks in your own account");
         }
         Account toAccount = accountDao.getAccountsById(transfer.getAccountTo());
-        if(toAccount==null) {
+        if (toAccount == null) {
             throw new TransferException("To account not found");
         }
-        if(toAccount.getUser_id().compareTo(user.getId())==0) {
+        if (toAccount.getUser_id().compareTo(user.getId()) == 0) {
             throw new TransferException("You are not allowed to send TE bucks to your own account");
         }
         transfer.setTransferTypeId(2L); // send
@@ -64,3 +64,4 @@ public class TransferController {
         accountDao.updateBalance(transfer.getAccountTo(), transfer.getAmount());
         transferDao.addTransfer(transfer);
     }
+}
