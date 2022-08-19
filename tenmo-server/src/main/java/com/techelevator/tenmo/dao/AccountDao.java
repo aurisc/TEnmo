@@ -10,10 +10,9 @@ public interface AccountDao {
     //List<User> findAll();
     //User findByUsername(String username);
     BigDecimal getBalance(String userName);
+    BigDecimal getBalanceById(Long accountId);
     Account[] getAccountsByUserId(Long userId);
-    //new
     Account getAccountById(Long accountId);
-    //new
     void updateBalance(Long accountId, BigDecimal amount);
 
 }

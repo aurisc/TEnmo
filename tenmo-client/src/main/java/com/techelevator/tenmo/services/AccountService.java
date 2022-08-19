@@ -40,11 +40,11 @@ public class AccountService {
     }
 
     public BigDecimal getBalanceForAccountId(Long id) {
+        String endpoint = baseUrl + "account/balance/" + id;
         BigDecimal balance = null;
         try {
             ResponseEntity<BigDecimal> response =
-                    restTemplate.exchange(baseUrl + "account/balance/" + id,
-                            HttpMethod.GET, makeAuthEntity(), BigDecimal.class);
+                    restTemplate.exchange(endpoint, HttpMethod.GET, makeAuthEntity(), BigDecimal.class);
             balance = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());

@@ -16,7 +16,6 @@ import java.security.Principal;
 
 @RestController
 @PreAuthorize("isAuthenticated()")
-@RequestMapping(path = "transfer")
 public class TransferController {
     private AccountDao accountDao;
     private TransferDao transferDao;

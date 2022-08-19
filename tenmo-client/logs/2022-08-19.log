@@ -12,3 +12,13 @@
 2022-08-19T13:22:41.3411507 Insufficient funds in account: 2001
 2022-08-19T13:23:01.1628355 500 : [{"timestamp":"2022-08-19T19:23:01.160+00:00","status":500,"error":"Internal Server Error","message":"Array index out of range: 0","path":"/user/0"}]
 2022-08-19T13:23:01.1638327 Unable to find User with Id: 0
+2022-08-19T13:38:10.7007245 500 : [{"timestamp":"2022-08-19T19:38:10.689+00:00","status":500,"error":"Internal Server Error","message":"Incorrect result size: expected 1, actual 0","path":"/account/balance/1001"}]
+2022-08-19T13:38:10.7007245 Insufficient funds in account: 2001
+2022-08-19T13:50:43.7495752 405 : [{"timestamp":"2022-08-19T19:50:43.735+00:00","status":405,"error":"Method Not Allowed","message":"Request method 'POST' not supported","path":"/account/transfer"}]
+2022-08-19T13:50:43.7505726 Unable to create new transfer.
+2022-08-19T13:53:20.0001081 405 : [{"timestamp":"2022-08-19T19:53:19.989+00:00","status":405,"error":"Method Not Allowed","message":"Request method 'POST' not supported","path":"/account/transfer"}]
+2022-08-19T13:53:20.0001081 Unable to create new transfer.
+2022-08-19T13:58:47.3764305 405 : [{"timestamp":"2022-08-19T19:58:47.360+00:00","status":405,"error":"Method Not Allowed","message":"Request method 'POST' not supported","path":"/account/transfer"}]
+2022-08-19T13:58:47.3774497 Unable to create new transfer.
+2022-08-19T14:01:19.6995596 500 : [{"timestamp":"2022-08-19T20:01:19.686+00:00","status":500,"error":"Internal Server Error","message":"HV000030: No validator could be found for constraint 'javax.validation.constraints.NotBlank' validating type 'java.lang.Long'. Check configuration for 'accountFrom'","path":"/account/transfer"}]
+2022-08-19T14:01:19.700556 Unable to create new transfer.

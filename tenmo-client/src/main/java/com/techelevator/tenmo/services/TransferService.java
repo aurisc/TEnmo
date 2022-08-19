@@ -30,8 +30,9 @@ public class TransferService {
         HttpEntity<Transfer> entity = makeTransferEntity(transfer);
         Transfer returnedTransfer = null;
         try {
-            returnedTransfer =
-                    restTemplate.postForObject(baseUrl + "account/transfer", entity, Transfer.class);
+            ResponseEntity<Transfer> response =
+                    restTemplate.exchange(baseUrl + "account/transfer", HttpMethod.POST, entity, Transfer.class);
+            returnedTransfer = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }

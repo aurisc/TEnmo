@@ -33,6 +33,17 @@ public class JdbcAccountDao implements AccountDao{
     }
 
     @Override
+    public BigDecimal getBalanceById(Long accountId) {
+        BigDecimal balance = null;
+        String sql = "SELECT balance FROM account WHERE account_id = ?;";
+        balance = jdbcTemplate.queryForObject(sql, BigDecimal.class, accountId);
+        if (balance != null) {
+            return balance;
+        }
+        return new BigDecimal(0);
+    }
+
+    @Override
     public Account[] getAccountsByUserId(Long userId) {
         List<Account> accountList = new ArrayList<>();
         String sql = "SELECT account_id, account.user_id, balance FROM account JOIN tenmo_user ON account.user_id = tenmo_user.user_id WHERE account.user_id = ?;";

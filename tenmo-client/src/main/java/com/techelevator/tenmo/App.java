@@ -150,7 +150,7 @@ public class App {
                 consoleService.printErrorMessage();
                 continue;
             }
-            if (!checkSufficientFunds(amountToSend, currentUser.getUser().getId())) {
+            if (!checkSufficientFunds(amountToSend, accountSelection)) {
                 BasicLogger.log("Insufficient funds in account: " + accountSelection);
                 consoleService.printErrorMessage();
                 continue;
