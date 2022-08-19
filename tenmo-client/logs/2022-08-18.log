@@ -1,0 +1,4 @@
+2022-08-18T21:25:09.4540642 404 : [{"timestamp":"2022-08-19T03:25:09.435+00:00","status":404,"error":"Not Found","message":"No message available","path":"/account/transfer"}]
+2022-08-18T21:25:15.6049856 404 : [{"timestamp":"2022-08-19T03:25:15.603+00:00","status":404,"error":"Not Found","message":"No message available","path":"/user"}]
+2022-08-18T21:31:52.2247028 404 : [{"timestamp":"2022-08-19T03:31:52.208+00:00","status":404,"error":"Not Found","message":"No message available","path":"/user"}]
+2022-08-18T21:38:08.3922252 500 : [{"timestamp":"2022-08-19T03:38:08.367+00:00","status":500,"error":"Internal Server Error","message":"Cannot invoke \"com.techelevator.tenmo.dao.UserDao.findAll()\" because \"this.userDao\" is null","path":"/user"}]

@@ -38,7 +38,9 @@ public class JdbcUserDao implements UserDao {
         String sql = "SELECT user_id, username, password_hash FROM tenmo_user WHERE user_id = ?;";
         User user = null;
         try {
-            user = jdbcTemplate.queryForObject(sql, User.class);
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id);
+            results.next();
+            user = mapRowToUser(results);
         } catch (DataAccessException e) {
             System.out.println(e.getMessage());
         }

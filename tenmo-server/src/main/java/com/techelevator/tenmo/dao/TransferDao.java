@@ -11,10 +11,12 @@ public interface TransferDao {
 
     Transfer[] getTransferByUserId(Long id);
 
-    void updateTransfer(Transfer transfer, Long typeId, Long statusId, Long transferId);
+    void updateTransfer(Transfer transfer);
 
     Transfer getTransferById(Long id);
 
-    void addTransfer(Transfer transfer, Long typeid, Long statusId,  Long idFrom, Long idTo, BigDecimal amount);
+    void addTransfer(Transfer transfer);
+
+    Transfer completeTransfer(Transfer transfer);
 
 }

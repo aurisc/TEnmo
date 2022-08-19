@@ -1,14 +1,21 @@
 package com.techelevator.tenmo.model;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 public class Transfer {
 
     private Long transferId;
+    @NotBlank
     private Long transferTypeId;
+    @NotBlank
     private Long transferStatusId;
+    @NotBlank
     private Long accountFrom;
+    @NotBlank
     private Long accountTo;
+    @Positive
     private BigDecimal amount;
 
     public Long getTransferId() {

@@ -2,9 +2,12 @@ package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
+import com.techelevator.tenmo.model.TransferStatus;
+import com.techelevator.tenmo.model.TransferType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 
@@ -15,7 +18,13 @@ import java.util.List;
 public class JdbcTransferDao implements TransferDao
 {
 
+    private JdbcAccountDao accountDao;
     private JdbcTemplate jdbcTemplate;
+
+    public JdbcTransferDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.accountDao = new JdbcAccountDao(jdbcTemplate);
+    }
 
     @Override
     public Transfer[] getAllTransfers() {
@@ -53,6 +62,30 @@ public class JdbcTransferDao implements TransferDao
         return transfer.toArray(new Transfer[0]);
     }
 
+    @Transactional
+    public Transfer completeTransfer(Transfer transfer) {
+        Transfer updatedTransfer = new Transfer();
+        updatedTransfer.setTransferId(transfer.getTransferId());
+        updatedTransfer.setTransferTypeId(transfer.getTransferTypeId());
+        updatedTransfer.setAccountTo(transfer.getAccountTo());
+        updatedTransfer.setAccountFrom(transfer.getAccountFrom());
+        updatedTransfer.setAmount(transfer.getAmount());
+        Account fromAccount = accountDao.getAccountsById(transfer.getAccountFrom());
+        Account toAccount = accountDao.getAccountsById(transfer.getAccountTo());
+        BigDecimal fromBalance = fromAccount.getBalance();
+        BigDecimal toBalance = toAccount.getBalance();
+        if (fromBalance.compareTo(transfer.getAmount()) >= 0) {
+            fromBalance = fromBalance.subtract(transfer.getAmount());
+            toBalance = toBalance.add(transfer.getAmount());
+            accountDao.updateBalance(fromAccount.getAccount_id(), fromBalance);
+            accountDao.updateBalance(toAccount.getAccount_id(), toBalance);
+            updatedTransfer.setTransferStatusId(TransferStatus.APPROVED.getStatusId());
+        } else {
+            updatedTransfer.setTransferStatusId(TransferStatus.REJECTED.getStatusId());
+        }
+        return updatedTransfer;
+    }
+
     @Override
     public Transfer getTransferById(Long id) {
         Transfer transfer = null;
@@ -69,24 +102,18 @@ public class JdbcTransferDao implements TransferDao
     }
 
     @Override
-    public void updateTransfer(Transfer transfer, Long typeId, Long statusId, Long transferId) {
-        Transfer transfer1 = getTransferById(transferId);
-        transfer1.setTransferId(transfer.getTransferId());
-        transfer1.setAccountFrom(transfer.getAccountFrom());
-        transfer1.setAccountTo(transfer.getAccountTo());
-        transfer1.setAmount(transfer.getAmount());
-        transfer1.setTransferTypeId(typeId);
-        transfer1.setTransferStatusId(statusId);
+    public void updateTransfer(Transfer transfer) {
         String SQL = "UPDATE transfer SET transfer_type_id = ?, transfer_status_id= ?  WHERE transfer_id = ?;";
-        jdbcTemplate.update(SQL, typeId, statusId, transferId);
+        jdbcTemplate.update(SQL, transfer.getTransferTypeId(), transfer.getTransferStatusId(), transfer.getTransferId());
     }
 
 
     @Override
-    public void addTransfer(Transfer transfer, Long typeid, Long statusId,  Long idFrom, Long idTo, BigDecimal amount) {
+    public void addTransfer(Transfer transfer) {
         String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                 "VALUES (?, ?, ?, ?, ?) RETURNING transfer_id;";
-        jdbcTemplate.update(sql, typeid, statusId, idFrom, idTo, amount);
+        jdbcTemplate.update(sql, transfer.getTransferTypeId(), transfer.getTransferStatusId(),
+                transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
     }
 
     private Transfer mapToRowTransfer(SqlRowSet results){
