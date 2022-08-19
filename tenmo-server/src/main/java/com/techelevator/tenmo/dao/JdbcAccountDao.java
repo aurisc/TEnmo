@@ -34,18 +34,20 @@ public class JdbcAccountDao implements AccountDao{
 
     @Override
     public Account[] getAccountsByUserId(Long userId) {
-        List<Account> accounts = new ArrayList<>();
-        String sql = "SELECT account_id, account.user_id, balance FROM account JOIN tenmo_user ON account.user_id = tenmo_user.user_id WHERE tenmo_user.user_id = ?;";
+        List<Account> accountList = new ArrayList<>();
+        String sql = "SELECT account_id, account.user_id, balance FROM account JOIN tenmo_user ON account.user_id = tenmo_user.user_id WHERE account.user_id = ?;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
         while (results.next()) {
             Account account = mapRowToAccount(results);
-            accounts.add(account);
+            accountList.add(account);
         }
-        return accounts.toArray(Account[]::new);
+        Account[] accounts = new Account[accountList.size()];
+        accounts = accountList.toArray(accounts);
+        return accounts;
     }
     //NEW
     @Override
-    public Account getAccountsById(Long accountId) {
+    public Account getAccountById(Long accountId) {
         Account account = null;
         String sql = "SELECT account_id, account.user_id, balance FROM account WHERE account_id = ?;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountId);
@@ -62,8 +64,8 @@ public class JdbcAccountDao implements AccountDao{
     }
     private Account mapRowToAccount(SqlRowSet rs) {
         Account account = new Account();
-        account.setAccount_id(rs.getLong("account_id"));
-        account.setUser_id(rs.getLong("user_id"));
+        account.setAccountId(rs.getLong("account_id"));
+        account.setUserId(rs.getLong("user_id"));
         account.setBalance(rs.getBigDecimal("balance"));
         return account;
     }

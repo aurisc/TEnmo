@@ -39,6 +39,19 @@ public class AccountService {
         return balance;
     }
 
+    public BigDecimal getBalanceForAccountId(Long id) {
+        BigDecimal balance = null;
+        try {
+            ResponseEntity<BigDecimal> response =
+                    restTemplate.exchange(baseUrl + "account/balance/" + id,
+                            HttpMethod.GET, makeAuthEntity(), BigDecimal.class);
+            balance = response.getBody();
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return balance;
+    }
+
     public User[] getUsers() {
         User[] users = null;
         try {
@@ -63,12 +76,12 @@ public class AccountService {
         return user;
     }
 
-    public Account[] getAccountsForUser(User user) {
+    public Account[] getAccountsForUser(Long userId) {
+        String endpoint = baseUrl + "account/user/" + userId;
         Account[] accounts = null;
         try {
             ResponseEntity<Account[]> response =
-                    restTemplate.exchange(baseUrl + "account/user/" + user.getId(),
-                            HttpMethod.GET, makeAuthEntity(), Account[].class);
+                    restTemplate.exchange(endpoint, HttpMethod.GET, makeAuthEntity(), Account[].class);
             accounts = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
@@ -77,10 +90,11 @@ public class AccountService {
     }
 
     public Account getAccountById(Long id) {
+        String endpoint = baseUrl + "account/" + id;
         Account account = null;
         try {
             ResponseEntity<Account> response =
-                    restTemplate.exchange(baseUrl + "account/" + id, HttpMethod.GET, makeAuthEntity(), Account.class);
+                    restTemplate.exchange(endpoint, HttpMethod.GET, makeAuthEntity(), Account.class);
             account = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());

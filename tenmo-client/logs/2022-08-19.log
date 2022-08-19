@@ -1,0 +1,14 @@
+2022-08-19T12:46:07.3012945 404 : [{"timestamp":"2022-08-19T18:46:07.288+00:00","status":404,"error":"Not Found","message":"No message available","path":"/account/2002"}]
+2022-08-19T12:46:07.3022917 Unable to find account: 2002 or account does not belong to user ID: 1002
+2022-08-19T12:46:14.4979946 500 : [{"timestamp":"2022-08-19T18:46:14.494+00:00","status":500,"error":"Internal Server Error","message":"Array index out of range: 0","path":"/user/0"}]
+2022-08-19T12:46:14.4979946 Unable to find User with Id: 0
+2022-08-19T13:02:13.0923564 404 : [{"timestamp":"2022-08-19T19:02:13.072+00:00","status":404,"error":"Not Found","message":"No message available","path":"/account/2001"}]
+2022-08-19T13:02:59.0031068 Unable to find account: 2001 or account does not belong to user ID: 1001
+2022-08-19T13:14:35.1272884 404 : [{"timestamp":"2022-08-19T19:14:35.110+00:00","status":404,"error":"Not Found","message":"No message available","path":"/account/2002"}]
+2022-08-19T13:14:43.2069403 Unable to find account: 2002 or account does not belong to user ID: 1002
+2022-08-19T13:15:05.0215831 500 : [{"timestamp":"2022-08-19T19:15:05.018+00:00","status":500,"error":"Internal Server Error","message":"Array index out of range: 0","path":"/user/0"}]
+2022-08-19T13:15:05.0215831 Unable to find User with Id: 0
+2022-08-19T13:22:41.3411507 404 : [{"timestamp":"2022-08-19T19:22:41.326+00:00","status":404,"error":"Not Found","message":"No message available","path":"/account/balance/1001"}]
+2022-08-19T13:22:41.3411507 Insufficient funds in account: 2001
+2022-08-19T13:23:01.1628355 500 : [{"timestamp":"2022-08-19T19:23:01.160+00:00","status":500,"error":"Internal Server Error","message":"Array index out of range: 0","path":"/user/0"}]
+2022-08-19T13:23:01.1638327 Unable to find User with Id: 0

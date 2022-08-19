@@ -113,34 +113,56 @@ public class App {
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
+        Long recipientAccountId;
         Transfer newTransfer = new Transfer();
         newTransfer.setTransferTypeId(TransferType.SEND.getTypeId());
-        printAllUsers();
-        int menuSelection = consoleService.promptForInt("Enter ID of user you are sending to: ");
-        if (menuSelection != 0) {
+        int menuSelection = -1;
+        while (menuSelection != 0) {
+            printAllUsers();
+            menuSelection = consoleService.promptForInt("Enter ID of user you are sending to: ");
             Long recipientId = (long) menuSelection;
-            User recipient = accountService.getUserById(recipientId);
-            printExternalAccounts(recipient);
-            Long recipientAccountId = (long) consoleService.promptForInt("Enter ID of account sending to: ");
-            Account toAccount = accountService.getAccountById(recipientAccountId);
-            if (toAccount != null) {
-                newTransfer.setAccountTo(toAccount.getAccountId());
+            if (!checkValidUserId(recipientId)) {
+                BasicLogger.log("Unable to find User with Id: " + recipientId);
+                consoleService.printErrorMessage();
+                continue;
             }
+            printExternalAccounts(recipientId);
+            menuSelection = consoleService.promptForInt("Enter ID of account sending to: ");
+            if (menuSelection != 0) {
+                recipientAccountId = (long) menuSelection;
+            } else {
+                continue;
+            }
+            if (!checkValidUserAccount(recipientId, recipientAccountId)) {
+                BasicLogger.log("Unable to find account: " + recipientAccountId
+                        + " or account does not belong to user ID: " + recipientId);
+                consoleService.printErrorMessage();
+                continue;
+            }
+            newTransfer.setAccountTo(recipientAccountId);
             BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount: ");
             printUserAccounts();
-            Long accountSelection = (long) consoleService.promptForInt("Enter ID of account sending from: ");
-            Account fromAccount = accountService.getAccountById(accountSelection);
-            if (fromAccount != null) {
-                newTransfer.setAccountFrom(fromAccount.getAccountId());
-                newTransfer.setAmount(amountToSend);
-                try {
-                    newTransfer.setTransferStatusId(transferService.validateTransfer(newTransfer, fromAccount.getBalance()).getStatusId());
-                } catch (TransferServiceException e) {
-                    newTransfer.setTransferStatusId(TransferStatus.REJECTED.getStatusId());
-                    consoleService.printErrorMessage();
-                    BasicLogger.log(e.getMessage());
-                }
+            menuSelection = consoleService.promptForInt("Enter ID of account sending from: ");
+            Long accountSelection = (long) menuSelection;
+            if (!checkValidUserAccount(currentUser.getUser().getId(), accountSelection)) {
+                BasicLogger.log("Unable to find account: " + accountSelection
+                        + " or account does not belong to user ID: " + currentUser.getUser().getId());
+                consoleService.printErrorMessage();
+                continue;
             }
+            if (!checkSufficientFunds(amountToSend, currentUser.getUser().getId())) {
+                BasicLogger.log("Insufficient funds in account: " + accountSelection);
+                consoleService.printErrorMessage();
+                continue;
+            }
+            newTransfer.setAccountFrom(accountSelection);
+            newTransfer.setAmount(amountToSend);
+            if (!checkValidTransfer(newTransfer)) {
+                BasicLogger.log("User must send a positive amount to a different account.");
+                consoleService.printErrorMessage();
+                continue;
+            }
+            newTransfer.setTransferStatusId(TransferStatus.APPROVED.getStatusId());
             Transfer createdTransfer = transferService.createTransfer(newTransfer);
             if (createdTransfer == null) {
                 consoleService.printErrorMessage();
@@ -158,25 +180,57 @@ public class App {
         User[] users = accountService.getUsers();
         if (users != null) {
             for (User user : users) {
-                System.out.println("ID: " + user.getId() + "User Name: " + user.getUsername());
+                System.out.println("ID: " + user.getId() + " User Name: " + user.getUsername());
             }
         }
     }
 
     private void printUserAccounts() {
-        Account[] accounts = accountService.getAccountsForUser(currentUser.getUser());
+        Account[] accounts = accountService.getAccountsForUser(currentUser.getUser().getId());
         if (accounts != null) {
             for (Account account : accounts) {
-                System.out.println("ID: " + account.getAccountId() + "Balance: " + account.getBalance());
+                System.out.println("ID: " + account.getAccountId() + " Balance: " + account.getBalance());
             }
         }
     }
 
-    private void printExternalAccounts(User user) {
-        Account[] accounts = accountService.getAccountsForUser(user);
+    private void printExternalAccounts(Long userId) {
+        Account[] accounts = accountService.getAccountsForUser(userId);
         for (Account account : accounts) {
             System.out.println("ID: " + account.getAccountId());
         }
+    }
+
+    private boolean checkValidUserId(Long id) {
+        User user;
+        user = accountService.getUserById(id);
+        return user != null;
+    }
+
+    private boolean checkValidUserAccount(Long userId, Long accountId) {
+        if (!checkValidUserId(userId)) {
+            return false;
+        }
+        Account account;
+        account = accountService.getAccountById(accountId);
+        return (account != null && account.getUserId().equals(userId));
+    }
+
+    private boolean checkValidTransfer(Transfer transfer) {
+
+        if (transfer.getAccountFrom().equals(transfer.getAccountTo())) {
+            return false;
+        }
+        return transfer.getAmount().compareTo(new BigDecimal("0.00")) > 0;
+    }
+
+    private boolean checkSufficientFunds(BigDecimal amount, Long accountId) {
+        BigDecimal accountBalance;
+        accountBalance = accountService.getBalanceForAccountId(accountId);
+        if (accountBalance == null) {
+            return false;
+        }
+        return amount.compareTo(accountBalance) <= 0;
     }
 
 }

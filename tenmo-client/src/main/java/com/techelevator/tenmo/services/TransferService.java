@@ -62,23 +62,6 @@ public class TransferService {
         return transfers;
     }
 
-    public TransferStatus validateTransfer(Transfer transfer, BigDecimal sourceAcctBal) throws TransferServiceException {
-
-        if (transfer.getAccountFrom().equals(transfer.getAccountTo())) {
-            throw new TransferServiceException("Unable to send or request money to same account.");
-        }
-        if (transfer.getAmount().compareTo(new BigDecimal("0.00")) <= 0) {
-            throw new TransferServiceException("Amount must be greater than zero.");
-        }
-        if (transfer.getTransferTypeId().equals(TransferType.REQUEST.getTypeId())) {
-            return TransferStatus.PENDING;
-        }
-        if (transfer.getAmount().compareTo(sourceAcctBal) > 0) {
-            throw new TransferServiceException("Insufficient funds.");
-        }
-        return TransferStatus.APPROVED;
-    }
-
     private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

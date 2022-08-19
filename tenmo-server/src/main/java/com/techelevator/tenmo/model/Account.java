@@ -4,33 +4,33 @@ import java.math.BigDecimal;
 
 public class Account {
 
-    private Long account_id;
-    private Long user_id;
+    private Long accountId;
+    private Long userId;
     private BigDecimal balance;
 
     public Account() {}
 
-    public Account(Long account_id, Long user_id, BigDecimal balance)
+    public Account(Long accountId, Long userId, BigDecimal balance)
     {
-        this.account_id = account_id;
-        this.user_id = user_id;
+        this.accountId = accountId;
+        this.userId = userId;
         this.balance = balance;
     }
 
-    public Long getAccount_id() {
-        return account_id;
+    public Long getAccountId() {
+        return accountId;
     }
 
-    public void setAccount_id(Long account_id) {
-        this.account_id = account_id;
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
     }
 
-    public Long getUser_id() {
-        return user_id;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser_id(Long user_id) {
-        this.user_id = user_id;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public BigDecimal getBalance() {

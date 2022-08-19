@@ -39,21 +39,21 @@ public class TransferController {
         if (user == null) {
             throw new TransferException("User not found");
         }
-        Account fromAccount = accountDao.getAccountsById(transfer.getAccountFrom());
+        Account fromAccount = accountDao.getAccountById(transfer.getAccountFrom());
         if (fromAccount == null) {
             throw new TransferException("From account not found");
         }
-        if (fromAccount.getUser_id().compareTo(user.getId()) != 0) {
+        if (fromAccount.getUserId().compareTo(user.getId()) != 0) {
             throw new TransferException("You can only send TE bucks from your own account");
         }
         if (fromAccount.getBalance().compareTo(transfer.getAmount()) < 0) {
             throw new TransferException("You do not have enough TE bucks in your own account");
         }
-        Account toAccount = accountDao.getAccountsById(transfer.getAccountTo());
+        Account toAccount = accountDao.getAccountById(transfer.getAccountTo());
         if (toAccount == null) {
             throw new TransferException("To account not found");
         }
-        if (toAccount.getUser_id().compareTo(user.getId()) == 0) {
+        if (toAccount.getUserId().compareTo(user.getId()) == 0) {
             throw new TransferException("You are not allowed to send TE bucks to your own account");
         }
         //transfer.setTransferTypeId(2L); // send

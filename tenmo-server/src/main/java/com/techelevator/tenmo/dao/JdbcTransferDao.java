@@ -70,15 +70,15 @@ public class JdbcTransferDao implements TransferDao
         updatedTransfer.setAccountTo(transfer.getAccountTo());
         updatedTransfer.setAccountFrom(transfer.getAccountFrom());
         updatedTransfer.setAmount(transfer.getAmount());
-        Account fromAccount = accountDao.getAccountsById(transfer.getAccountFrom());
-        Account toAccount = accountDao.getAccountsById(transfer.getAccountTo());
+        Account fromAccount = accountDao.getAccountById(transfer.getAccountFrom());
+        Account toAccount = accountDao.getAccountById(transfer.getAccountTo());
         BigDecimal fromBalance = fromAccount.getBalance();
         BigDecimal toBalance = toAccount.getBalance();
         if (fromBalance.compareTo(transfer.getAmount()) >= 0) {
             fromBalance = fromBalance.subtract(transfer.getAmount());
             toBalance = toBalance.add(transfer.getAmount());
-            accountDao.updateBalance(fromAccount.getAccount_id(), fromBalance);
-            accountDao.updateBalance(toAccount.getAccount_id(), toBalance);
+            accountDao.updateBalance(fromAccount.getAccountId(), fromBalance);
+            accountDao.updateBalance(toAccount.getAccountId(), toBalance);
             updatedTransfer.setTransferStatusId(TransferStatus.APPROVED.getStatusId());
         } else {
             updatedTransfer.setTransferStatusId(TransferStatus.REJECTED.getStatusId());

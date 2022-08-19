@@ -38,6 +38,11 @@ public class AccountController {
         return accountDao.getAccountsByUserId(id);
     }
 
+    @RequestMapping(path = "account/{id}", method = RequestMethod.GET)
+    public Account getAccountById(@PathVariable Long id) {
+        return accountDao.getAccountById(id);
+    }
+
     @RequestMapping(path = "user", method = RequestMethod.GET)
     public User[] getUsers() {
         List<User> userList = userDao.findAll();
