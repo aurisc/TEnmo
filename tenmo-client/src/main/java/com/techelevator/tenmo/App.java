@@ -2,6 +2,8 @@ package com.techelevator.tenmo;
 
 import com.techelevator.tenmo.model.*;
 import com.techelevator.tenmo.services.*;
+import com.techelevator.tenmo.services.serviceExceptions.TransferServiceException;
+import com.techelevator.util.BasicLogger;
 
 import java.math.BigDecimal;
 
@@ -95,7 +97,13 @@ public class App {
 
 	private void viewTransferHistory() {
 		// TODO Auto-generated method stub
-		
+		Transfer[] transfers = transferService.getTransfersCurrentUser();
+        if (transfers != null) {
+            System.out.println("Transfers for user: " + currentUser.getUser().getUsername());
+            for (Transfer transfer : transfers) {
+                System.out.println(transfer.toString());
+            }
+        }
 	}
 
 	private void viewPendingRequests() {
@@ -105,35 +113,38 @@ public class App {
 
 	private void sendBucks() {
 		// TODO Auto-generated method stub
+        Transfer newTransfer = new Transfer();
+        newTransfer.setTransferTypeId(TransferType.SEND.getTypeId());
         printAllUsers();
         int menuSelection = consoleService.promptForInt("Enter ID of user you are sending to: ");
         if (menuSelection != 0) {
             Long recipientId = (long) menuSelection;
-            if (!recipientId.equals(currentUser.getUser().getId())) {
-                User recipient = accountService.getUserById(recipientId);
-                printExternalAccounts(recipient);
-                Long recipientAccountId = (long) consoleService.promptForInt("Enter ID of account sending to: ");
-                Account toAccount = accountService.getAccountById(recipientAccountId);
-                if (toAccount != null) {
-                    BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount: ");
-                    if (amountToSend.compareTo(new BigDecimal(0)) > 0) {
-                        printUserAccounts();
-                        Long accountSelection = (long) consoleService.promptForInt("Enter ID of account sending from: ");
-                        Account fromAccount = accountService.getAccountById(accountSelection);
-                        if (fromAccount != null && fromAccount.getBalance().compareTo(amountToSend) >= 0) {
-                            Transfer newTransfer = new Transfer();
-                            newTransfer.setTransferTypeId(TransferType.SEND.getTypeId());
-                            newTransfer.setTransferStatusId(TransferStatus.APPROVED.getStatusId());
-                            newTransfer.setAccountFrom(fromAccount.getAccountId());
-                            newTransfer.setAccountTo(toAccount.getAccountId());
-                            newTransfer.setAmount(amountToSend);
-                            Transfer createdTransfer = transferService.createTransfer(newTransfer);
-                            if (createdTransfer == null) {
-                                consoleService.printErrorMessage();
-                            }
-                        }
-                    }
+            User recipient = accountService.getUserById(recipientId);
+            printExternalAccounts(recipient);
+            Long recipientAccountId = (long) consoleService.promptForInt("Enter ID of account sending to: ");
+            Account toAccount = accountService.getAccountById(recipientAccountId);
+            if (toAccount != null) {
+                newTransfer.setAccountTo(toAccount.getAccountId());
+            }
+            BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount: ");
+            printUserAccounts();
+            Long accountSelection = (long) consoleService.promptForInt("Enter ID of account sending from: ");
+            Account fromAccount = accountService.getAccountById(accountSelection);
+            if (fromAccount != null) {
+                newTransfer.setAccountFrom(fromAccount.getAccountId());
+                newTransfer.setAmount(amountToSend);
+                try {
+                    newTransfer.setTransferStatusId(transferService.validateTransfer(newTransfer, fromAccount.getBalance()).getStatusId());
+                } catch (TransferServiceException e) {
+                    newTransfer.setTransferStatusId(TransferStatus.REJECTED.getStatusId());
+                    consoleService.printErrorMessage();
+                    BasicLogger.log(e.getMessage());
                 }
+            }
+            Transfer createdTransfer = transferService.createTransfer(newTransfer);
+            if (createdTransfer == null) {
+                consoleService.printErrorMessage();
+                BasicLogger.log("Unable to create new transfer.");
             }
         }
 	}
