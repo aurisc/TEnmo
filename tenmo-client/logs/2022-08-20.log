@@ -1,0 +1,6 @@
+2022-08-20T09:25:39.7261006 500 : [{"timestamp":"2022-08-20T15:25:39.700+00:00","status":500,"error":"Internal Server Error","message":"PreparedStatementCallback; SQL [INSERT INTO transfer (transfer_type_id, transfer_status_id, account... (451 bytes)]
+2022-08-20T09:25:39.7270993 Unable to create new transfer.
+2022-08-20T09:48:55.3995053 500 : [{"timestamp":"2022-08-20T15:48:55.384+00:00","status":500,"error":"Internal Server Error","message":"Array index out of range: 0","path":"/user/0"}]
+2022-08-20T09:48:55.4004652 Unable to find User with Id: 0
+2022-08-20T09:58:12.2094243 500 : [{"timestamp":"2022-08-20T15:58:12.189+00:00","status":500,"error":"Internal Server Error","message":"Array index out of range: 0","path":"/user/0"}]
+2022-08-20T09:58:12.2195155 Unable to find User with Id: 0

@@ -29,7 +29,7 @@ public class TransferController {
 
     //NEW Send TE Bucks
     @RequestMapping(path = "/account/transfer", method = RequestMethod.POST)
-    public void createTransfer(@Valid @RequestBody Transfer transfer, Principal principal) throws TransferException {
+    public Transfer createTransfer(@Valid @RequestBody Transfer transfer, Principal principal) throws TransferException {
         //compareTo =0 equal, 1 greater than, -1 less than
         if (transfer.getAmount().compareTo(new BigDecimal(0)) < 1) {
             throw new TransferException("Transfer amount should be greater than zero");
@@ -64,6 +64,6 @@ public class TransferController {
                 transfer.getTransferStatusId().equals(TransferStatus.APPROVED.getStatusId())) {
             transfer = transferDao.completeTransfer(transfer);
         }
-        transferDao.addTransfer(transfer);
+        return transferDao.addTransfer(transfer);
     }
 }

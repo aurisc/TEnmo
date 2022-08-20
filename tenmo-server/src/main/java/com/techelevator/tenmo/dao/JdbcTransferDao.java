@@ -76,7 +76,7 @@ public class JdbcTransferDao implements TransferDao
         BigDecimal toBalance = toAccount.getBalance();
         if (fromBalance.compareTo(transfer.getAmount()) >= 0) {
             fromBalance = fromBalance.subtract(transfer.getAmount());
-            toBalance = toBalance.add(transfer.getAmount());
+            toBalance.add(transfer.getAmount());
             accountDao.updateBalance(fromAccount.getAccountId(), fromBalance);
             accountDao.updateBalance(toAccount.getAccountId(), toBalance);
             updatedTransfer.setTransferStatusId(TransferStatus.APPROVED.getStatusId());
@@ -109,11 +109,15 @@ public class JdbcTransferDao implements TransferDao
 
 
     @Override
-    public void addTransfer(Transfer transfer) {
+    public Transfer addTransfer(Transfer transfer) {
         String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
                 "VALUES (?, ?, ?, ?, ?) RETURNING transfer_id;";
-        jdbcTemplate.update(sql, transfer.getTransferTypeId(), transfer.getTransferStatusId(),
+        Long transferId = jdbcTemplate.queryForObject(sql, Long.class, transfer.getTransferTypeId(), transfer.getTransferStatusId(),
                 transfer.getAccountFrom(), transfer.getAccountTo(), transfer.getAmount());
+        if (transferId != null) {
+            transfer.setTransferId(transferId);
+        }
+        return transfer;
     }
 
     private Transfer mapToRowTransfer(SqlRowSet results){

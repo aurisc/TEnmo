@@ -15,7 +15,7 @@ public interface TransferDao {
 
     Transfer getTransferById(Long id);
 
-    void addTransfer(Transfer transfer);
+    Transfer addTransfer(Transfer transfer);
 
     Transfer completeTransfer(Transfer transfer);
 
