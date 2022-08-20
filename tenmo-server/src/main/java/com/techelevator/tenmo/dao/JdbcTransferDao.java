@@ -64,26 +64,14 @@ public class JdbcTransferDao implements TransferDao
 
     @Transactional
     public Transfer completeTransfer(Transfer transfer) {
-        Transfer updatedTransfer = new Transfer();
-        updatedTransfer.setTransferId(transfer.getTransferId());
-        updatedTransfer.setTransferTypeId(transfer.getTransferTypeId());
-        updatedTransfer.setAccountTo(transfer.getAccountTo());
-        updatedTransfer.setAccountFrom(transfer.getAccountFrom());
-        updatedTransfer.setAmount(transfer.getAmount());
-        Account fromAccount = accountDao.getAccountById(transfer.getAccountFrom());
-        Account toAccount = accountDao.getAccountById(transfer.getAccountTo());
-        BigDecimal fromBalance = fromAccount.getBalance();
-        BigDecimal toBalance = toAccount.getBalance();
-        if (fromBalance.compareTo(transfer.getAmount()) >= 0) {
-            fromBalance = fromBalance.subtract(transfer.getAmount());
-            toBalance.add(transfer.getAmount());
-            accountDao.updateBalance(fromAccount.getAccountId(), fromBalance);
-            accountDao.updateBalance(toAccount.getAccountId(), toBalance);
-            updatedTransfer.setTransferStatusId(TransferStatus.APPROVED.getStatusId());
-        } else {
-            updatedTransfer.setTransferStatusId(TransferStatus.REJECTED.getStatusId());
-        }
-        return updatedTransfer;
+        BigDecimal fromBalance = accountDao.getBalanceById(transfer.getAccountFrom());
+        BigDecimal toBalance = accountDao.getBalanceById(transfer.getAccountTo());
+        fromBalance = fromBalance.subtract(transfer.getAmount());
+        toBalance = toBalance.add(transfer.getAmount());
+        accountDao.updateBalance(transfer.getAccountFrom(), fromBalance);
+        accountDao.updateBalance(transfer.getAccountTo(), toBalance);
+        transfer.setTransferStatusId(TransferStatus.APPROVED.getStatusId());
+        return transfer;
     }
 
     @Override
