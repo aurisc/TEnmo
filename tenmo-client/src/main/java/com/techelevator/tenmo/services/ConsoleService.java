@@ -88,4 +88,10 @@ public class ConsoleService {
         System.out.println("An error occurred. Check the log for details.");
     }
 
+    // new 08/22 added overload to accept error message as a parameter
+    public void printErrorMessage(String message) {
+        System.out.println(message);
+    }
+
+
 }

@@ -117,64 +117,99 @@ public class App {
         Transfer newTransfer = new Transfer();
         newTransfer.setTransferTypeId(TransferType.SEND.getTypeId());
         int menuSelection = -1;
+
+        String errorMessage; //new 08/22
+
         while (menuSelection != 0) {
+            System.out.println('\n'); //new 08/22 added blank lines
+
             printAllUsers();
             menuSelection = consoleService.promptForInt("Enter ID of user you are sending to (0 to cancel): "); // new added 0 to cancel
             //new 8/22
-            if (menuSelection != 0) {
-                Long recipientId = (long) menuSelection;
-                if (!checkValidUserId(recipientId)) {
-                    BasicLogger.log("Unable to find User with Id: " + recipientId);
-                    consoleService.printErrorMessage();
-                    continue;
-                }
-                printExternalAccounts(recipientId);
-                menuSelection = consoleService.promptForInt("Enter ID of account sending to: ");
-                if (menuSelection != 0) {
-                    recipientAccountId = (long) menuSelection;
-                } else {
-                    continue;
-                }
-                if (!checkValidUserAccount(recipientId, recipientAccountId)) {
-                    BasicLogger.log("Unable to find account: " + recipientAccountId
-                            + " or account does not belong to user ID: " + recipientId);
-                    consoleService.printErrorMessage();
-                    continue;
-                }
-                newTransfer.setAccountTo(recipientAccountId);
-                BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount: ");
-                printUserAccounts();
-                menuSelection = consoleService.promptForInt("Enter ID of account sending from: ");
-                Long accountSelection = (long) menuSelection;
-                if (!checkValidUserAccount(currentUser.getUser().getId(), accountSelection)) {
-                    BasicLogger.log("Unable to find account: " + accountSelection
-                            + " or account does not belong to user ID: " + currentUser.getUser().getId());
-                    consoleService.printErrorMessage();
-                    continue;
-                }
-                if (!checkSufficientFunds(amountToSend, accountSelection)) {
-                    BasicLogger.log("Insufficient funds in account: " + accountSelection);
-                    consoleService.printErrorMessage();
-                    continue;
-                }
-                newTransfer.setAccountFrom(accountSelection);
-                newTransfer.setAmount(amountToSend);
-                if (!checkValidTransfer(newTransfer)) {
-                    BasicLogger.log("User must send a positive amount to a different account.");
-                    consoleService.printErrorMessage();
-                    continue;
-                }
-                newTransfer.setTransferStatusId(TransferStatus.APPROVED.getStatusId());
-                Transfer createdTransfer = transferService.createTransfer(newTransfer);
-                if (createdTransfer == null) {
-                    consoleService.printErrorMessage();
-                    BasicLogger.log("Unable to create new transfer.");
-                }
-                //new 08/22 to go back to previous menu
-                System.out.println("Transfer successful.");
-                menuSelection=0;
+            if (menuSelection == 0) break;
 
+            Long recipientId = (long) menuSelection;
+
+            //new 8/22 to exit if user to is current user
+            if(recipientId.equals(currentUser.getUser().getId())) {
+                errorMessage="Sending money to self is not allowed";
+                BasicLogger.log(errorMessage);
+                consoleService.printErrorMessage(errorMessage);
+                continue;
             }
+
+            if (!checkValidUserId(recipientId)) {
+                errorMessage="Unable to find User with Id: " + recipientId;
+                BasicLogger.log(errorMessage);
+                consoleService.printErrorMessage(errorMessage);
+                continue;
+            }
+            System.out.println('\n'); //new 08/22 added blank lines
+
+            printExternalAccounts(recipientId);
+
+            //new 08/22 added 0 to cancel
+            menuSelection = consoleService.promptForInt("Enter ID of account sending to (0 to cancel): ");
+            if (menuSelection != 0) {
+                recipientAccountId = (long) menuSelection;
+            } else {
+                continue;
+            }
+            if (!checkValidUserAccount(recipientId, recipientAccountId)) {
+                errorMessage= "Unable to find account: " + recipientAccountId
+                        + " or account does not belong to user ID: " + recipientId;
+                BasicLogger.log(errorMessage);
+                consoleService.printErrorMessage(errorMessage);
+                continue;
+            }
+            newTransfer.setAccountTo(recipientAccountId);
+            BigDecimal amountToSend = consoleService.promptForBigDecimal("Enter amount: ");
+
+            //new 08/22 checking if amount > 0 moved here
+            if (amountToSend.compareTo(new BigDecimal(0))<= 0) {
+                errorMessage = "Amount should be greater than zero.";
+                BasicLogger.log(errorMessage);
+                consoleService.printErrorMessage(errorMessage);
+                continue;
+            }
+            System.out.println('\n'); //new 08/22 added blank lines
+
+            printUserAccounts();
+            menuSelection = consoleService.promptForInt("Enter ID of account sending from: ");
+            Long accountSelection = (long) menuSelection;
+            if (!checkValidUserAccount(currentUser.getUser().getId(), accountSelection)) {
+                errorMessage= "Unable to find account: " + accountSelection
+                        + " or account does not belong to user ID: " + currentUser.getUser().getId();
+                BasicLogger.log(errorMessage);
+                consoleService.printErrorMessage(errorMessage);
+                continue;
+            }
+            if (!checkSufficientFunds(amountToSend, accountSelection)) {
+                errorMessage= "Insufficient funds in account: " + accountSelection;
+                BasicLogger.log(errorMessage);
+                consoleService.printErrorMessage(errorMessage);
+                continue;
+            }
+            newTransfer.setAccountFrom(accountSelection);
+            newTransfer.setAmount(amountToSend);
+            /* moved checking of amount immediately after input
+            if (!checkValidTransfer(newTransfer)) {
+                errorMessage = "User must send a positive amount to a different account.";
+                BasicLogger.log(errorMessage);
+                consoleService.printErrorMessage(errorMessage);
+                continue;
+            }
+            */
+            newTransfer.setTransferStatusId(TransferStatus.APPROVED.getStatusId());
+            Transfer createdTransfer = transferService.createTransfer(newTransfer);
+            if (createdTransfer == null) {
+                errorMessage = "Unable to create new transfer.";
+                consoleService.printErrorMessage(errorMessage);
+                BasicLogger.log(errorMessage);
+            }
+            //new 08/22 to go back to previous menu
+            System.out.println("Transfer successful.");
+            menuSelection=0;
         }
 	}
 
@@ -187,7 +222,7 @@ public class App {
         User[] users = accountService.getUsers();
         if (users != null) {
             for (User user : users) {
-                System.out.println("ID: " + user.getId() + " User Name: " + user.getUsername());
+                System.out.println("ID: " + user.getId() + "    User Name: " + user.getUsername());
             }
         }
     }
@@ -196,7 +231,7 @@ public class App {
         Account[] accounts = accountService.getAccountsForUser(currentUser.getUser().getId());
         if (accounts != null) {
             for (Account account : accounts) {
-                System.out.println("ID: " + account.getAccountId() + " Balance: " + account.getBalance());
+                System.out.println("ID: " + account.getAccountId() + "    Balance: " + account.getBalance());
             }
         }
     }
