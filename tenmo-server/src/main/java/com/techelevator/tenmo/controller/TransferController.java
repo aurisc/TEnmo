@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.controller;
 
 import com.techelevator.tenmo.dao.AccountDao;
+import com.techelevator.tenmo.dao.JdbcTransferDao;
 import com.techelevator.tenmo.dao.TransferDao;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.*;
@@ -65,5 +66,14 @@ public class TransferController {
             transfer = transferDao.completeTransfer(transfer);
         }
         return transferDao.addTransfer(transfer);
+    }
+
+    @RequestMapping(path = "account/transfer/history", method = RequestMethod.GET)
+    public Transfer[] getAllTransferHistory(Principal principal)
+    {
+        Long id = userDao.findByUsername(principal.getName()).getId();
+        Account[] accounts = accountDao.getAccountsByUserId(id);
+        Long accountId = accounts[0].getAccountId();
+        return transferDao.getAllTransfers(accountId);
     }
 }

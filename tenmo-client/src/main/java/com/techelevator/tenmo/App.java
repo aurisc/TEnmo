@@ -5,6 +5,7 @@ import com.techelevator.tenmo.services.*;
 import com.techelevator.tenmo.services.serviceExceptions.TransferServiceException;
 import com.techelevator.util.BasicLogger;
 
+import javax.swing.*;
 import java.math.BigDecimal;
 
 public class App {
@@ -102,6 +103,12 @@ public class App {
             System.out.println("Transfers for user: " + currentUser.getUser().getUsername());
             for (Transfer transfer : transfers) {
                 System.out.println(transfer.toString());
+            }
+            int menuSelection = 0;
+            menuSelection = consoleService.promptForInt("Please enter transfer ID to view details (0 to cancel): ");
+            if(menuSelection != 0) {
+                Transfer selectedTransfer = checkForAccount(transfers,(long)menuSelection);
+                    System.out.println(selectedTransfer.toDetailString());
             }
         }
 	}
@@ -236,6 +243,13 @@ public class App {
         }
     }
 
+    private StringBuilder userName(Transfer transfer)
+    {
+        StringBuilder usernames = null;
+        if(transfer.getTransferTypeId().equals(TransferType.SEND.getTypeId()))
+            usernames.append(accountService.getAccountUsername(transfer.getAccountFrom()));
+    }
+
     private void printExternalAccounts(Long userId) {
         Account[] accounts = accountService.getAccountsForUser(userId);
         for (Account account : accounts) {
@@ -275,4 +289,15 @@ public class App {
         return amount.compareTo(accountBalance) <= 0;
     }
 
+    private Transfer checkForAccount(Transfer[] transfers, Long id)
+    {
+        Transfer selectedTransfer = null;
+        for (Transfer transfer : transfers) {
+            if(transfer.getTransferId().equals(id)) {
+                selectedTransfer = transfer;
+                break;
+            }
+        }
+        return selectedTransfer;
+    }
 }

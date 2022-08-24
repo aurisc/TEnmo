@@ -14,5 +14,6 @@ public interface AccountDao {
     Account[] getAccountsByUserId(Long userId);
     Account getAccountById(Long accountId);
     void updateBalance(Long accountId, BigDecimal amount);
+    String getAccountUsername(Long id);
 
 }

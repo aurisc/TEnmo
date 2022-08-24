@@ -12,6 +12,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -27,12 +28,13 @@ public class JdbcTransferDao implements TransferDao
     }
 
     @Override
-    public Transfer[] getAllTransfers() {
-        List<Transfer> transfer = null;
-        String sql = "SELECT * FROM transfer";
+    public Transfer[] getAllTransfers(Long id) {
+        List<Transfer> transfer = new ArrayList<Transfer>();
+        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfer " +
+                "WHERE account_from = ? OR account_to = ?";
         try
         {
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id, id);
             while (results.next()) {
                 Transfer mapTransfer = mapToRowTransfer(results);
                 transfer.add(mapTransfer);
@@ -47,10 +49,10 @@ public class JdbcTransferDao implements TransferDao
     @Override
     public Transfer[] getTransferByUserId(Long id) {
         List<Transfer> transfer = null;
-        String sql = "SELECT * FROM transfer WHERE account_from = ? OR account_to = ?";
+        String sql = "SELECT * FROM transfer WHERE transfer_id = ?";
         try
         {
-            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id, id);
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id);
             while (results.next()) {
                 Transfer mapTransfer = mapToRowTransfer(results);
                 transfer.add(mapTransfer);

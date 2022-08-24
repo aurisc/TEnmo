@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 public interface TransferDao {
 
-    Transfer[] getAllTransfers();
+    Transfer[] getAllTransfers(Long id);
 
     Transfer[] getTransferByUserId(Long id);
 

@@ -73,6 +73,13 @@ public class JdbcAccountDao implements AccountDao{
         String sql = "UPDATE account set balance = ? WHERE account_id = ?";
         jdbcTemplate.update(sql, amount, accountId);
     }
+
+    @Override
+    public String getAccountUsername(Long id)
+    {
+        String sql = "SELECT username FROM tenmo_user AS tu JOIN account AS a ON a.user_id = tu.user_id WHERE tu.account_id = ?";
+        return jdbcTemplate.queryForObject(sql,String.class,id);
+    }
     private Account mapRowToAccount(SqlRowSet rs) {
         Account account = new Account();
         account.setAccountId(rs.getLong("account_id"));

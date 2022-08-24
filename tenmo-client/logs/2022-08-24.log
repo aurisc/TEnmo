@@ -1,0 +1,10 @@
+2022-08-24T15:34:30.0547254 400 : [{"timestamp":"2022-08-24T21:34:30.037+00:00","status":400,"error":"Bad Request","message":"Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'; nested exception is java.lang.NumberFormatException: For input string: \"transfer\"","path":"/account/transfer"}]
+2022-08-24T15:39:42.1943588 Insufficient funds in account: 2003
+2022-08-24T15:58:04.6178087 500 : [{"timestamp":"2022-08-24T21:58:04.601+00:00","status":500,"error":"Internal Server Error","message":"PreparedStatementCallback; bad SQL grammar [SELECT transfer_id, transfer_type_id, transfer_status_i... (435 bytes)]
+2022-08-24T16:08:45.8826373 500 : [{"timestamp":"2022-08-24T22:08:45.858+00:00","status":500,"error":"Internal Server Error","message":"PreparedStatementCallback; bad SQL grammar [SELECT transfer_id, transfer_type_id, transfer_status_i... (435 bytes)]
+2022-08-24T16:10:34.9138464 500 : [{"timestamp":"2022-08-24T22:10:34.891+00:00","status":500,"error":"Internal Server Error","message":"StatementCallback; bad SQL grammar [SELECT transfer_id, transfer_type_id, transfer_status_id, accou... (475 bytes)]
+2022-08-24T16:11:47.1359258 500 : [{"timestamp":"2022-08-24T22:11:47.113+00:00","status":500,"error":"Internal Server Error","message":"No message available","path":"/account/transfer/history"}]
+2022-08-24T16:13:09.3238405 500 : [{"timestamp":"2022-08-24T22:13:09.297+00:00","status":500,"error":"Internal Server Error","message":"No message available","path":"/account/transfer/history"}]
+2022-08-24T16:17:39.8585597 500 : [{"timestamp":"2022-08-24T22:17:39.834+00:00","status":500,"error":"Internal Server Error","message":"No message available","path":"/account/transfer/history"}]
+2022-08-24T16:20:42.1521563 500 : [{"timestamp":"2022-08-24T22:20:42.130+00:00","status":500,"error":"Internal Server Error","message":"No message available","path":"/account/transfer/history"}]
+2022-08-24T16:26:29.4892339 500 : [{"timestamp":"2022-08-24T22:26:29.463+00:00","status":500,"error":"Internal Server Error","message":"No message available","path":"/account/transfer/history"}]
