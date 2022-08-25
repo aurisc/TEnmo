@@ -4,6 +4,7 @@ import com.techelevator.tenmo.dao.AccountDao;
 import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.User;
+import com.techelevator.tenmo.model.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,36 +34,29 @@ public class AccountController {
         return accountDao.getBalance(principal.getName());
     }
 
-//    @RequestMapping(path = "account/balance/{id}", method = RequestMethod.GET)
-//    public BigDecimal getBalanceById(@PathVariable Long id) {
-//        return accountDao.getBalanceById(id);
-//    }
-
-//    @RequestMapping(path = "account/user/{id}", method = RequestMethod.GET)
-//    public Account[] getAccountsByUserId(@PathVariable Long id) {
-//        return accountDao.getAccountsByUserId(id);
-//    }
-
-//    @RequestMapping(path = "account/{id}", method = RequestMethod.GET)
-//    public Account getAccountById(@PathVariable Long id) {
-//        return accountDao.getAccountById(id);
-//    }
-
     @RequestMapping(path = "user", method = RequestMethod.GET)
-    public User[] getUsers() {
+    public UserDTO[] getUsers() {
         List<User> userList = userDao.findAll();
-        User[] users = new User[userList.size()];
-        users = userList.toArray(users);
+        UserDTO[] users = new UserDTO[userList.size()];
+        if (userList.size() > 0) {
+            int index = 0;
+            for (User user : userList) {
+                users[index] = convertUserToDTO(user);
+                index++;
+            }
+        }
         return users;
     }
 
     @RequestMapping(path = "user/{id}", method = RequestMethod.GET)
-    public User getUserById(@PathVariable Long id) {
-        return userDao.findById(id);
+    public UserDTO getUserById(@PathVariable Long id) {
+        return convertUserToDTO(userDao.findById(id));
     }
 
-//    @RequestMapping(path = "user/account/{id}", method = RequestMethod.GET)
-//    public String getAccountUsername(@PathVariable Long id) {
-//        return accountDao.getAccountUsername(id);
-//    }
+    private UserDTO convertUserToDTO(User user) {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        return userDTO;
+    }
 }
