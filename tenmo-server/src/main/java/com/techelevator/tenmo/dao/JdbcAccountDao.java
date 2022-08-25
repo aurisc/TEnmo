@@ -77,7 +77,7 @@ public class JdbcAccountDao implements AccountDao{
     @Override
     public String getAccountUsername(Long id)
     {
-        String sql = "SELECT username FROM tenmo_user AS tu JOIN account AS a ON a.user_id = tu.user_id WHERE tu.account_id = ?";
+        String sql = "SELECT username FROM tenmo_user AS tu JOIN account AS a ON a.user_id = tu.user_id WHERE a.account_id = ?";
         return jdbcTemplate.queryForObject(sql,String.class,id);
     }
     private Account mapRowToAccount(SqlRowSet rs) {

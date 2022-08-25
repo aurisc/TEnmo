@@ -1,5 +1,7 @@
 package com.techelevator.tenmo.model;
 
+import com.techelevator.tenmo.services.TransferType;
+
 import java.math.BigDecimal;
 
 public class Transfer {
@@ -61,11 +63,26 @@ public class Transfer {
 
     public String toDetailString()
     {
+        String transferType = "";
+        String transferStatus = "";
+        if (transferTypeId.equals((long) 2)) {
+            transferType = "Send";
+        } else if (transferTypeId.equals((long) 1)) {
+            transferType = "Request";
+        }
+        if (transferStatusId.equals((long) 1)) {
+            transferStatus = "Pending";
+        } else if (transferStatusId.equals((long) 2)) {
+            transferStatus = "Approved";
+        } else if (transferStatusId.equals((long) 3)) {
+            transferStatus = "Rejected";
+        }
+
         String transfer = "Transfer id:"+getTransferId()+
                 " Account from: "+getAccountFrom()+
                 " Account to: "+getAccountTo()+
-                " Transfer type: "+getTransferTypeId()+
-                " Transfer status "+getTransferStatusId()+
+                " Transfer type: "+ transferType +
+                " Transfer status "+ transferStatus +
                 " Amount: "+ getAmount();
         return transfer;
     };

@@ -14,4 +14,5 @@ public enum TransferType {
     public Long getTypeId() {
         return typeId;
     }
+
 }

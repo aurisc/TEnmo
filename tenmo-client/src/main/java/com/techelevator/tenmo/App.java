@@ -102,7 +102,7 @@ public class App {
         if (transfers != null) {
             System.out.println("Transfers for user: " + currentUser.getUser().getUsername());
             for (Transfer transfer : transfers) {
-                System.out.println(transfer.toString());
+                printTransferInfo(transfer);
             }
             int menuSelection = 0;
             menuSelection = consoleService.promptForInt("Please enter transfer ID to view details (0 to cancel): ");
@@ -243,11 +243,17 @@ public class App {
         }
     }
 
-    private StringBuilder userName(Transfer transfer)
+    private void printTransferInfo(Transfer transfer)
     {
-        StringBuilder usernames = null;
-        if(transfer.getTransferTypeId().equals(TransferType.SEND.getTypeId()))
-            usernames.append(accountService.getAccountUsername(transfer.getAccountFrom()));
+        String fromUser = accountService.getAccountUsername(transfer.getAccountFrom());
+        String toUser = accountService.getAccountUsername(transfer.getAccountTo());
+        if(fromUser.equals(currentUser.getUser().getUsername())) {
+            System.out.println("Transfer Id: " + transfer.getTransferId() +
+                    " To: " + toUser + " Amount: " + transfer.getAmount());
+        } else {
+            System.out.println("Transfer Id: " + transfer.getTransferId() +
+                    " From: " + fromUser + " Amount: " + transfer.getAmount());
+        }
     }
 
     private void printExternalAccounts(Long userId) {
