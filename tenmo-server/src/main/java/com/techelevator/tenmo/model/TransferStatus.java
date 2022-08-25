@@ -15,4 +15,13 @@ public enum TransferStatus {
     public Long getStatusId() {
         return statusId;
     }
+
+    public static TransferStatus getById(Long id) {
+        for (TransferStatus status : values()) {
+            if (status.statusId.equals(id)) {
+                return status;
+            }
+        }
+        return null;
+    }
 }

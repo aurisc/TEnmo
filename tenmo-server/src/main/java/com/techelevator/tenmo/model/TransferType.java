@@ -14,4 +14,13 @@ public enum TransferType {
         return typeId;
     }
 
+    public static TransferType getById(Long id) {
+        for (TransferType type : values()) {
+            if (type.typeId.equals(id)) {
+                return type;
+            }
+        }
+        return null;
+    }
+
 }

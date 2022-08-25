@@ -99,18 +99,8 @@ public class TransferController {
     private TransferDTO convertTransferToDTO(Transfer transfer) {
         TransferDTO transferDTO = new TransferDTO();
         transferDTO.setTransferId(transfer.getTransferId());
-        if (transfer.getTransferTypeId().equals(1L)) {
-            transferDTO.setType(TransferType.REQUEST);
-        } else if (transfer.getTransferTypeId().equals(2L)) {
-            transferDTO.setType(TransferType.SEND);
-        }
-        if (transfer.getTransferStatusId().equals(1L)) {
-            transferDTO.setStatus(TransferStatus.PENDING);
-        } else if (transfer.getTransferStatusId().equals(2L)) {
-            transferDTO.setStatus(TransferStatus.APPROVED);
-        } else if (transfer.getTransferStatusId().equals(3L)) {
-            transferDTO.setStatus(TransferStatus.REJECTED);
-        }
+        transferDTO.setType(TransferType.getById(transfer.getTransferTypeId()));
+        transferDTO.setStatus(TransferStatus.getById(transfer.getTransferStatusId()));
         transferDTO.setFromUser(accountDao.getAccountUser(transfer.getAccountFrom()));
         transferDTO.setToUser(accountDao.getAccountUser(transfer.getAccountTo()));
         transferDTO.setAmount(transfer.getAmount());
