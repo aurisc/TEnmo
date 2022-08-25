@@ -1,9 +1,6 @@
 package com.techelevator.tenmo.services;
 
-import com.techelevator.tenmo.model.Account;
-import com.techelevator.tenmo.model.AuthenticatedUser;
-import com.techelevator.tenmo.model.Transfer;
-import com.techelevator.tenmo.model.User;
+import com.techelevator.tenmo.model.*;
 import com.techelevator.util.BasicLogger;
 import org.springframework.http.*;
 import org.springframework.web.client.ResourceAccessException;
@@ -31,20 +28,7 @@ public class AccountService {
         BigDecimal balance = null;
         try {
             ResponseEntity<BigDecimal> response =
-            restTemplate.exchange(baseUrl + "account/balance", HttpMethod.GET, makeAuthEntity(), BigDecimal.class);
-            balance = response.getBody();
-        } catch (RestClientResponseException | ResourceAccessException e) {
-            BasicLogger.log(e.getMessage());
-        }
-        return balance;
-    }
-
-    public BigDecimal getBalanceForAccountId(Long id) {
-        String endpoint = baseUrl + "account/balance/" + id;
-        BigDecimal balance = null;
-        try {
-            ResponseEntity<BigDecimal> response =
-                    restTemplate.exchange(endpoint, HttpMethod.GET, makeAuthEntity(), BigDecimal.class);
+            restTemplate.exchange(baseUrl + "balance", HttpMethod.GET, makeAuthEntity(), BigDecimal.class);
             balance = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
@@ -76,45 +60,64 @@ public class AccountService {
         return user;
     }
 
-    public String getAccountUsername(Long id)
-    {
-        String username = null;
+    public Transfer createTransfer(Transfer transfer) {
+        HttpEntity<Transfer> entity = makeTransferEntity(transfer);
+        Transfer returnedTransfer = null;
         try {
-            ResponseEntity<String> response =
-                    restTemplate.exchange(baseUrl + "user/account/" + id, HttpMethod.GET, makeAuthEntity(), String.class);
-            username = response.getBody();
+            ResponseEntity<Transfer> response =
+                    restTemplate.exchange(baseUrl + "transfer", HttpMethod.POST, entity, Transfer.class);
+            returnedTransfer = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
-        return username;
+        return returnedTransfer;
     }
 
-    public Account[] getAccountsForUser(Long userId) {
-        String endpoint = baseUrl + "account/user/" + userId;
-        Account[] accounts = null;
+    public Transfer[] getTransferHistory() {
+        Transfer[] transfers = null;
         try {
-            ResponseEntity<Account[]> response =
-                    restTemplate.exchange(endpoint, HttpMethod.GET, makeAuthEntity(), Account[].class);
-            accounts = response.getBody();
+            ResponseEntity<Transfer[]> response =
+                    restTemplate.exchange(baseUrl + "transfer/history", HttpMethod.GET,
+                            makeAuthEntity(), Transfer[].class);
+            transfers = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
-        return accounts;
+        return transfers;
     }
 
-    public Account getAccountById(Long id) {
-        String endpoint = baseUrl + "account/" + id;
-        Account account = null;
+    public Transfer[] getPendingTransfers() {
+        Transfer[] pendingTransfers = null;
         try {
-            ResponseEntity<Account> response =
-                    restTemplate.exchange(endpoint, HttpMethod.GET, makeAuthEntity(), Account.class);
-            account = response.getBody();
+            ResponseEntity<Transfer[]> response =
+                    restTemplate.exchange(baseUrl + "transfer/pending", HttpMethod.GET,
+                            makeAuthEntity(), Transfer[].class);
+            pendingTransfers = response.getBody();
         } catch (RestClientResponseException | ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
-        return account;
+        return pendingTransfers;
     }
 
+    public boolean updateTransfer(Transfer transfer) {
+        HttpEntity<Transfer> entity = makeTransferEntity(transfer);
+        boolean success = false;
+        long transferId = transfer.getTransferId();
+        try {
+            restTemplate.put(baseUrl + "transfer/" + transferId, entity);
+            success = true;
+        } catch (RestClientResponseException | ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return success;
+    }
+
+    private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(user.getToken());
+        return new HttpEntity<>(transfer, headers);
+    }
 
     private HttpEntity<Void> makeAuthEntity() {
         HttpHeaders headers = new HttpHeaders();

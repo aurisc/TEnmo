@@ -15,4 +15,17 @@ public enum TransferStatus {
     public Long getStatusId() {
         return statusId;
     }
+
+    @Override
+    public String toString() {
+        switch (this) {
+            case APPROVED:
+                return "Approved";
+            case PENDING:
+                return "Pending";
+            case REJECTED:
+                return "Rejected";
+        }
+        return "";
+    }
 }

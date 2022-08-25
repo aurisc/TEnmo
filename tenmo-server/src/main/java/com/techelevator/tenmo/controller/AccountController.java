@@ -28,25 +28,25 @@ public class AccountController {
         this.userDao = userDao;
     }
 
-    @RequestMapping(path = "account/balance", method = RequestMethod.GET)
+    @RequestMapping(path = "balance", method = RequestMethod.GET)
     public BigDecimal getBalance(Principal principal) {
         return accountDao.getBalance(principal.getName());
     }
 
-    @RequestMapping(path = "account/balance/{id}", method = RequestMethod.GET)
-    public BigDecimal getBalanceById(@PathVariable Long id) {
-        return accountDao.getBalanceById(id);
-    }
+//    @RequestMapping(path = "account/balance/{id}", method = RequestMethod.GET)
+//    public BigDecimal getBalanceById(@PathVariable Long id) {
+//        return accountDao.getBalanceById(id);
+//    }
 
-    @RequestMapping(path = "account/user/{id}", method = RequestMethod.GET)
-    public Account[] getAccountsByUserId(@PathVariable Long id) {
-        return accountDao.getAccountsByUserId(id);
-    }
+//    @RequestMapping(path = "account/user/{id}", method = RequestMethod.GET)
+//    public Account[] getAccountsByUserId(@PathVariable Long id) {
+//        return accountDao.getAccountsByUserId(id);
+//    }
 
-    @RequestMapping(path = "account/{id}", method = RequestMethod.GET)
-    public Account getAccountById(@PathVariable Long id) {
-        return accountDao.getAccountById(id);
-    }
+//    @RequestMapping(path = "account/{id}", method = RequestMethod.GET)
+//    public Account getAccountById(@PathVariable Long id) {
+//        return accountDao.getAccountById(id);
+//    }
 
     @RequestMapping(path = "user", method = RequestMethod.GET)
     public User[] getUsers() {
@@ -61,8 +61,8 @@ public class AccountController {
         return userDao.findById(id);
     }
 
-    @RequestMapping(path = "user/account/{id}", method = RequestMethod.GET)
-    public String getAccountUsername(@PathVariable Long id) {
-        return accountDao.getAccountUsername(id);
-    }
+//    @RequestMapping(path = "user/account/{id}", method = RequestMethod.GET)
+//    public String getAccountUsername(@PathVariable Long id) {
+//        return accountDao.getAccountUsername(id);
+//    }
 }

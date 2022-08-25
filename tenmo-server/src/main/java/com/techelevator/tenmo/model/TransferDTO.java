@@ -1,22 +1,27 @@
 package com.techelevator.tenmo.model;
 
-import com.techelevator.tenmo.services.TransferStatus;
-import com.techelevator.tenmo.services.TransferType;
-
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
-public class Transfer {
+public class TransferDTO {
+
     private Long transferId;
-    private User fromUser;
-    private User toUser;
+    @NotNull
+    private UserDTO fromUser;
+    @NotNull
+    private UserDTO toUser;
+    @NotNull
     private TransferType type;
+    @NotNull
     private TransferStatus status;
+    @Positive
     private BigDecimal amount;
 
-    public Transfer() {
+    public TransferDTO() {
     }
 
-    public Transfer(User fromUser, User toUser, TransferType type, TransferStatus status, BigDecimal amount) {
+    public TransferDTO(UserDTO fromUser, UserDTO toUser, TransferType type, TransferStatus status, BigDecimal amount) {
         this.fromUser = fromUser;
         this.toUser = toUser;
         this.type = type;
@@ -32,19 +37,19 @@ public class Transfer {
         this.transferId = transferId;
     }
 
-    public User getFromUser() {
+    public UserDTO getFromUser() {
         return fromUser;
     }
 
-    public void setFromUser(User fromUser) {
+    public void setFromUser(UserDTO fromUser) {
         this.fromUser = fromUser;
     }
 
-    public User getToUser() {
+    public UserDTO getToUser() {
         return toUser;
     }
 
-    public void setToUser(User toUser) {
+    public void setToUser(UserDTO toUser) {
         this.toUser = toUser;
     }
 
@@ -70,16 +75,5 @@ public class Transfer {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "Transfer id:"+ transferId + "\n" +
-                " From: " + fromUser.getUsername() + "\n" +
-                " To: " + toUser.getUsername() + "\n" +
-                " Transfer type: "+ type.toString() + "\n" +
-                " Transfer status "+ status.toString() + "\n" +
-                " Amount: " + amount;
     }
 }

@@ -15,4 +15,14 @@ public enum TransferType {
         return typeId;
     }
 
+    @Override
+    public String toString() {
+        switch (this) {
+            case SEND:
+                return "Send";
+            case REQUEST:
+                return "Request";
+        }
+        return "";
+    }
 }

@@ -1,0 +1,5 @@
+2022-08-25T12:50:31.5130744 I/O error on POST request for "http://localhost:8080/login": Connection refused: connect; nested exception is java.net.ConnectException: Connection refused: connect
+2022-08-25T15:06:01.7018096 500 : [{"timestamp":"2022-08-25T21:06:01.680+00:00","status":500,"error":"Internal Server Error","message":"Invalid column name; nested exception is java.sql.SQLException: Invalid column name","path":"/transfer/history"}]
+2022-08-25T15:06:08.4005303 404 : [{"timestamp":"2022-08-25T21:06:08.396+00:00","status":404,"error":"Not Found","message":"No message available","path":"/transfer/pending"}]
+2022-08-25T15:06:26.8870359 500 : [{"timestamp":"2022-08-25T21:06:26.885+00:00","status":500,"error":"Internal Server Error","message":"Invalid column name; nested exception is java.sql.SQLException: Invalid column name","path":"/transfer/history"}]
+2022-08-25T15:08:44.1945244 500 : [{"timestamp":"2022-08-25T21:08:44.159+00:00","status":500,"error":"Internal Server Error","message":"PreparedStatementCallback; bad SQL grammar [SELECT user_id, username FROM tenmo_user AS tu JOIN acc... (408 bytes)]
