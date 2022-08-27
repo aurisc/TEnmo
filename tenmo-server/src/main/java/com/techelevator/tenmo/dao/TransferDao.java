@@ -9,9 +9,11 @@ public interface TransferDao {
 
     Transfer[] getAllTransfers(Long id);
 
+    Transfer[] getPendingTransfers(Long accountId);
+
     Transfer[] getTransferByUserId(Long id);
 
-    void updateTransfer(Transfer transfer);
+    boolean updateTransfer(Transfer transfer);
 
     Transfer getTransferById(Long id);
 

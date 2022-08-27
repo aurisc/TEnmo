@@ -45,18 +45,18 @@ public class TransferController {
         if (fromAccount == null) {
             throw new TransferException("From account not found");
         }
-        if (fromAccount.getUserId().compareTo(user.getId()) != 0) {
-            throw new TransferException("You can only send TE bucks from your own account");
-        }
-        if (fromAccount.getBalance().compareTo(transferDTO.getAmount()) < 0) {
-            throw new TransferException("You do not have enough TE bucks in your own account");
-        }
+//        if (fromAccount.getUserId().compareTo(user.getId()) != 0) {
+//            throw new TransferException("You can only send TE bucks from your own account");
+//        }
+//        if (fromAccount.getBalance().compareTo(transferDTO.getAmount()) < 0) {
+//            throw new TransferException("You do not have enough TE bucks in your own account");
+//        }
         if (toAccount == null) {
             throw new TransferException("To account not found");
         }
-        if (toAccount.getUserId().compareTo(user.getId()) == 0) {
-            throw new TransferException("You are not allowed to send TE bucks to your own account");
-        }
+//        if (toAccount.getUserId().compareTo(user.getId()) == 0) {
+//            throw new TransferException("You are not allowed to send TE bucks to your own account");
+//        }
         //transfer.setTransferTypeId(2L); // send
         //transfer.setTransferStatusId(2L); // approved
 
@@ -94,6 +94,48 @@ public class TransferController {
             transferHistory = null;
         }
         return transferHistory;
+    }
+
+    @RequestMapping(path = "/pending", method = RequestMethod.GET)
+    public TransferDTO[] getPendingTransfers(Principal principal) {
+        Transfer[] transfers;
+        TransferDTO[] pendingTransfers;
+        Long userId = userDao.findByUsername(principal.getName()).getId();
+        Account[] accounts = accountDao.getAccountsByUserId(userId);
+        Long accountId = accounts[0].getAccountId();
+        transfers = transferDao.getPendingTransfers(accountId);
+        if (transfers != null) {
+            pendingTransfers = new TransferDTO[transfers.length];
+            int index = 0;
+            for (Transfer transfer : transfers) {
+                pendingTransfers[index] = convertTransferToDTO(transfer);
+                index++;
+            }
+        } else {
+            pendingTransfers = null;
+        }
+        return pendingTransfers;
+    }
+
+    @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
+    public boolean completePendingTransfer(@Valid @RequestBody TransferDTO pendingTransfer, Principal principal)  throws TransferException {
+        if (!pendingTransfer.getFromUser().getUsername().equals(principal.getName())) {
+            throw new TransferException("Unable to complete transfers from other users.");
+        }
+        if (!pendingTransfer.getType().equals(TransferType.REQUEST)) {
+            throw new TransferException("Transfer is not a request.");
+        }
+        Transfer updatedTransfer = null;
+        Account fromAccount = accountDao.getAccountsByUserId(pendingTransfer.getFromUser().getId())[0];
+        Account toAccount = accountDao.getAccountsByUserId(pendingTransfer.getToUser().getId())[0];
+        updatedTransfer = new Transfer(pendingTransfer.getType().getTypeId(),
+                pendingTransfer.getStatus().getStatusId(), fromAccount.getAccountId(), toAccount.getAccountId(),
+                pendingTransfer.getAmount());
+        updatedTransfer.setTransferId(pendingTransfer.getTransferId());
+        if (pendingTransfer.getStatus().equals(TransferStatus.APPROVED)) {
+            transferDao.completeTransfer(updatedTransfer);
+        }
+        return transferDao.updateTransfer(updatedTransfer);
     }
 
     private TransferDTO convertTransferToDTO(Transfer transfer) {

@@ -1,0 +1,7 @@
+2022-08-27T10:14:51.0127425 500 : [{"timestamp":"2022-08-27T16:14:50.990+00:00","status":500,"error":"Internal Server Error","message":"You can only send TE bucks from your own account","path":"/transfer"}]
+2022-08-27T10:54:24.5931569 500 : [{"timestamp":"2022-08-27T16:54:24.570+00:00","status":500,"error":"Internal Server Error","message":"Transfer is not a pending request.","path":"/transfer/3010"}]
+2022-08-27T10:56:14.0301855 500 : [{"timestamp":"2022-08-27T16:56:14.028+00:00","status":500,"error":"Internal Server Error","message":"Transfer is not a pending request.","path":"/transfer/3010"}]
+2022-08-27T10:59:57.5610254 Insufficient funds.
+2022-08-27T11:02:19.3170549 500 : [{"timestamp":"2022-08-27T17:02:19.301+00:00","status":500,"error":"Internal Server Error","message":"Array index out of range: 0","path":"/user/1200"}]
+2022-08-27T11:02:19.3180528 User ID not found: 1200
+2022-08-27T11:04:46.5206449 Insufficient funds.

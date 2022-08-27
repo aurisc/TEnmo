@@ -122,20 +122,41 @@ public class App {
             if (menuSelection != 0) {
                 Transfer selectedTransfer = checkForAccount(pendingTransfers, (long) menuSelection);
                 System.out.println(selectedTransfer.toString());
-                System.out.println("1. Approve\n2. Reject\n0. Don't approve or reject");
-                menuSelection = consoleService.promptForMenuSelection("Please choose an option: ");
-                switch (menuSelection) {
-                    case 1:
-                        // Approve
-                        break;
-                    case 2:
-                        // Reject
-                        break;
-                    case 0:
-                        // Neither approve nor reject
-                        break;
-                    default :
-                        System.out.println("Invalid selection");
+                if (selectedTransfer.getFromUser().getUsername().equals(currentUser.getUser().getUsername())) {
+                    System.out.println("1. Approve\n2. Reject\n0. Don't approve or reject");
+                    menuSelection = consoleService.promptForMenuSelection("Please choose an option: ");
+                    switch (menuSelection) {
+                        case 1:
+                            // Approve
+                            boolean success = false;
+                            try {
+                                checkValidTransferAmount(selectedTransfer.getAmount());
+                            } catch (AccountServiceException e) {
+                                consoleService.printErrorMessage(e.getMessage());
+                                BasicLogger.log(e.getMessage());
+                                break;
+                            }
+                            selectedTransfer.setStatus(TransferStatus.APPROVED);
+                            success = accountService.updateTransfer(selectedTransfer);
+                            if (success) {
+                                System.out.println("Pending transfer approved.");
+                            }
+                            break;
+                        case 2:
+                            // Reject
+                            selectedTransfer.setStatus(TransferStatus.REJECTED);
+                            success = accountService.updateTransfer(selectedTransfer);
+                            if (success) {
+                                System.out.println("Pending transfer rejected.");
+                            }
+                            break;
+                        case 0:
+                            // Neither approve nor reject
+                            consoleService.pause();
+                            break;
+                        default:
+                            System.out.println("Invalid selection");
+                    }
                 }
 
             }
@@ -185,6 +206,36 @@ public class App {
 
 	private void requestBucks() {
 		// TODO Auto-generated method stub
+        User userSelection = null;
+        BigDecimal amountToTransfer = null;
+        int menuSelection = -1;
+        while (menuSelection !=0) { // Main loop for starting Request transfer
+            if (userSelection == null) { // User not selected yet
+                printAllUsers();
+                menuSelection = consoleService.promptForInt("Select user ID (0 to cancel.): ");
+                if (menuSelection != 0) {
+                    try {
+                        userSelection = getValidatedUserId((long) menuSelection);
+                    } catch (AccountServiceException e) {
+                        consoleService.printErrorMessage(e.getMessage());
+                        BasicLogger.log(e.getMessage());
+                    }
+                } else {
+                    continue;
+                }
+            }
+            amountToTransfer = consoleService.promptForBigDecimal("Enter amount to transfer: ");
+            if (amountToTransfer != null && amountToTransfer.compareTo(new BigDecimal(0)) > 0) {
+                Transfer transfer =
+                        new Transfer(userSelection, currentUser.getUser(), TransferType.REQUEST,
+                                TransferStatus.PENDING, amountToTransfer);
+                Transfer returnedTransfer = accountService.createTransfer(transfer);
+                if (returnedTransfer != null) {
+                    System.out.println("Successfully created transfer. ID: " + returnedTransfer.getTransferId());
+                    break;
+                }
+            }
+        }
 		
 	}
 
@@ -223,7 +274,7 @@ public class App {
             throw new AccountServiceException("User ID not found: " + id);
         }
         if (currentUser.getUser().getId().equals(id)) {
-            throw new AccountServiceException("Currently unable to send funds to self.");
+            throw new AccountServiceException("Currently unable to send or request funds to self.");
         }
         return user;
     }

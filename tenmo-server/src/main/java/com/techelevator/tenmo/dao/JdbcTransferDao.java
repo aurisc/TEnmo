@@ -31,7 +31,7 @@ public class JdbcTransferDao implements TransferDao
     public Transfer[] getAllTransfers(Long id) {
         List<Transfer> transfer = new ArrayList<Transfer>();
         String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfer " +
-                "WHERE account_from = ? OR account_to = ?";
+                "WHERE account_from = ? OR account_to = ?;";
         try
         {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id, id);
@@ -47,9 +47,30 @@ public class JdbcTransferDao implements TransferDao
     }
 
     @Override
+    public Transfer[] getPendingTransfers(Long accountId) {
+        List<Transfer> transfer = new ArrayList<Transfer>();
+        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount FROM transfer " +
+                "WHERE (account_from = ? OR account_to = ?) AND (transfer_status_id = ?);";
+        try
+        {
+            SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountId, accountId, TransferStatus.PENDING.getStatusId());
+            while (results.next()) {
+                Transfer mapTransfer = mapToRowTransfer(results);
+                transfer.add(mapTransfer);
+            }
+        }
+        catch (ResourceAccessException | RestClientResponseException e)
+        {
+        }
+        return transfer.toArray(new Transfer[0]);
+    }
+
+    @Override
     public Transfer[] getTransferByUserId(Long id) {
         List<Transfer> transfer = null;
-        String sql = "SELECT * FROM transfer WHERE transfer_id = ?";
+        String sql = "SELECT transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount " +
+                "FROM transfer JOIN account ON account.account_id = transfer.account_from " +
+                "WHERE account.user_id = ?";
         try
         {
             SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id);
@@ -92,9 +113,9 @@ public class JdbcTransferDao implements TransferDao
     }
 
     @Override
-    public void updateTransfer(Transfer transfer) {
-        String SQL = "UPDATE transfer SET transfer_type_id = ?, transfer_status_id= ?  WHERE transfer_id = ?;";
-        jdbcTemplate.update(SQL, transfer.getTransferTypeId(), transfer.getTransferStatusId(), transfer.getTransferId());
+    public boolean updateTransfer(Transfer transfer) {
+        String SQL = "UPDATE transfer SET transfer_status_id= ?  WHERE transfer_id = ?;";
+        return jdbcTemplate.update(SQL, transfer.getTransferStatusId(), transfer.getTransferId()) == 1;
     }
 
 
