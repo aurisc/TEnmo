@@ -45,23 +45,10 @@ public class TransferController {
         if (fromAccount == null) {
             throw new TransferException("From account not found");
         }
-//        if (fromAccount.getUserId().compareTo(user.getId()) != 0) {
-//            throw new TransferException("You can only send TE bucks from your own account");
-//        }
-//        if (fromAccount.getBalance().compareTo(transferDTO.getAmount()) < 0) {
-//            throw new TransferException("You do not have enough TE bucks in your own account");
-//        }
+
         if (toAccount == null) {
             throw new TransferException("To account not found");
         }
-//        if (toAccount.getUserId().compareTo(user.getId()) == 0) {
-//            throw new TransferException("You are not allowed to send TE bucks to your own account");
-//        }
-        //transfer.setTransferTypeId(2L); // send
-        //transfer.setTransferStatusId(2L); // approved
-
-        //accountDao.updateBalance(transfer.getAccountFrom(), transfer.getAmount().negate());
-        //accountDao.updateBalance(transfer.getAccountTo(), transfer.getAmount());
 
         Transfer transfer = transferDao.addTransfer(new Transfer(transferDTO.getType().getTypeId(),
                 transferDTO.getStatus().getStatusId(), fromAccount.getAccountId(), toAccount.getAccountId(),
@@ -74,6 +61,7 @@ public class TransferController {
         return transferDTO;
     }
 
+    //Show the history of all transfers
     @RequestMapping(path = "/history", method = RequestMethod.GET)
     public TransferDTO[] getAllTransferHistory(Principal principal)
     {
@@ -95,7 +83,7 @@ public class TransferController {
         }
         return transferHistory;
     }
-
+    //Show pending transfers for accounts
     @RequestMapping(path = "/pending", method = RequestMethod.GET)
     public TransferDTO[] getPendingTransfers(Principal principal) {
         Transfer[] transfers;
@@ -116,7 +104,7 @@ public class TransferController {
         }
         return pendingTransfers;
     }
-
+    //Adjust the transfer status of pending transfers
     @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
     public boolean completePendingTransfer(@Valid @RequestBody TransferDTO pendingTransfer, Principal principal)  throws TransferException {
         if (!pendingTransfer.getFromUser().getUsername().equals(principal.getName())) {
@@ -130,14 +118,14 @@ public class TransferController {
         Account toAccount = accountDao.getAccountsByUserId(pendingTransfer.getToUser().getId())[0];
         updatedTransfer = new Transfer(pendingTransfer.getType().getTypeId(),
                 pendingTransfer.getStatus().getStatusId(), fromAccount.getAccountId(), toAccount.getAccountId(),
-                pendingTransfer.getAmount());
+                pendingTransfer.getAmount()); //Get all information of the transfer
         updatedTransfer.setTransferId(pendingTransfer.getTransferId());
         if (pendingTransfer.getStatus().equals(TransferStatus.APPROVED)) {
             transferDao.completeTransfer(updatedTransfer);
         }
         return transferDao.updateTransfer(updatedTransfer);
     }
-
+    //Converting into a DTO
     private TransferDTO convertTransferToDTO(Transfer transfer) {
         TransferDTO transferDTO = new TransferDTO();
         transferDTO.setTransferId(transfer.getTransferId());

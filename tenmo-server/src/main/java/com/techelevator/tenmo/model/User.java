@@ -3,7 +3,7 @@ package com.techelevator.tenmo.model;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-
+//Handles User information of getting and setting
 public class User {
 
    private Long id;

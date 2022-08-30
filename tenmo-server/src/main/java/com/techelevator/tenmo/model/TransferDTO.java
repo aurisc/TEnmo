@@ -3,7 +3,7 @@ package com.techelevator.tenmo.model;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
-
+//Handles Transfer information of getting and setting
 public class TransferDTO {
 
     private Long transferId;

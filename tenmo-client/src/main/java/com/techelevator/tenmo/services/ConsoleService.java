@@ -5,11 +5,11 @@ import com.techelevator.tenmo.model.UserCredentials;
 
 import java.math.BigDecimal;
 import java.util.Scanner;
-
+//Mainly for outputs of menus and user information
 public class ConsoleService {
 
     private final Scanner scanner = new Scanner(System.in);
-
+    //Show main menus
     public int promptForMenuSelection(String prompt) {
         int menuSelection;
         System.out.print(prompt);
@@ -51,12 +51,12 @@ public class ConsoleService {
         String password = promptForString("Password: ");
         return new UserCredentials(username, password);
     }
-
+    //Request a string input to be used for other service checks
     public String promptForString(String prompt) {
         System.out.print(prompt);
         return scanner.nextLine();
     }
-
+    //Request a int to be used for other services
     public int promptForInt(String prompt) {
         System.out.print(prompt);
         while (true) {
@@ -67,7 +67,7 @@ public class ConsoleService {
             }
         }
     }
-
+    //Request for a bigDecimal to be used later in services
     public BigDecimal promptForBigDecimal(String prompt) {
         System.out.print(prompt);
         while (true) {
@@ -83,7 +83,7 @@ public class ConsoleService {
         System.out.println("\nPress Enter to continue...");
         scanner.nextLine();
     }
-
+    //basic error message
     public void printErrorMessage() {
         System.out.println("An error occurred. Check the log for details.");
     }

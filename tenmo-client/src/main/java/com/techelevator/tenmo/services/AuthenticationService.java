@@ -21,7 +21,7 @@ public class AuthenticationService {
     public AuthenticationService(String url) {
         this.baseUrl = url;
     }
-
+    //Send login of user to database to pull account
     public AuthenticatedUser login(UserCredentials credentials) {
         HttpEntity<UserCredentials> entity = createCredentialsEntity(credentials);
         AuthenticatedUser user = null;
@@ -34,7 +34,7 @@ public class AuthenticationService {
         }
         return user;
     }
-
+    //Allow creation of an account
     public boolean register(UserCredentials credentials) {
         HttpEntity<UserCredentials> entity = createCredentialsEntity(credentials);
         boolean success = false;
@@ -46,7 +46,7 @@ public class AuthenticationService {
         }
         return success;
     }
-
+    //Makes cred entity to be used later on for auth
     private HttpEntity<UserCredentials> createCredentialsEntity(UserCredentials credentials) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

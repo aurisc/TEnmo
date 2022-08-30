@@ -28,12 +28,12 @@ public class AccountController {
         this.accountDao = accountDao;
         this.userDao = userDao;
     }
-
+    //Get the balance from database
     @RequestMapping(path = "balance", method = RequestMethod.GET)
     public BigDecimal getBalance(Principal principal) {
         return accountDao.getBalance(principal.getName());
     }
-
+    //Get the user from the database
     @RequestMapping(path = "user", method = RequestMethod.GET)
     public UserDTO[] getUsers() {
         List<User> userList = userDao.findAll();

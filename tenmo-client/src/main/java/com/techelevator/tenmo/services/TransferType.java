@@ -1,7 +1,7 @@
 package com.techelevator.tenmo.services;
 
 public enum TransferType {
-
+    //ENUM to be used to keep variables for Request and Send separate and easy to call.
     REQUEST ((long) 1),
     SEND    ((long) 2);
 

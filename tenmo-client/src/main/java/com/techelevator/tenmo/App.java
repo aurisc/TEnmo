@@ -8,7 +8,7 @@ import com.techelevator.util.BasicLogger;
 import java.math.BigDecimal;
 
 public class App {
-
+    //Local API to be used
     private static final String API_BASE_URL = "http://localhost:8080/";
 
     private final ConsoleService consoleService = new ConsoleService();
@@ -29,6 +29,7 @@ public class App {
             mainMenu();
         }
     }
+    //First menu to login/register
     private void loginMenu() {
         int menuSelection = -1;
         while (menuSelection != 0 && currentUser == null) {
@@ -44,7 +45,7 @@ public class App {
             }
         }
     }
-
+    //Create your account
     private void handleRegister() {
         System.out.println("Please register a new user account");
         UserCredentials credentials = consoleService.promptForCredentials();
@@ -54,17 +55,16 @@ public class App {
             consoleService.printErrorMessage();
         }
     }
-
+    //Login with a registered account
     private void handleLogin() {
         UserCredentials credentials = consoleService.promptForCredentials();
         currentUser = authenticationService.login(credentials);
         accountService.setUser(currentUser);
-//        transferService.setUser(currentUser);
         if (currentUser == null) {
             consoleService.printErrorMessage();
         }
     }
-
+    //Main menu of an account after login
     private void mainMenu() {
         int menuSelection = -1;
         while (menuSelection != 0) {
@@ -88,14 +88,14 @@ public class App {
             consoleService.pause();
         }
     }
-
+    //See the balance of your account
 	private void viewCurrentBalance() {
         BigDecimal balance = accountService.getBalance();
         System.out.println("Current account balance: " + balance);
 	}
-
+    //Show all transfer history
 	private void viewTransferHistory() {
-		// COMPLETE Auto-generated method stub
+		// COMPLETE
 		Transfer[] transfers = accountService.getTransferHistory();
         if (transfers != null) {
             System.out.println("Transfers for user: " + currentUser.getUser().getUsername());
@@ -103,7 +103,7 @@ public class App {
                 printTransferInfo(transfer);
             }
             int menuSelection = consoleService.promptForInt("Please enter transfer ID to view details (0 to cancel): ");
-            if(menuSelection != 0) {
+            if(menuSelection != 0) { //Show more details of a transfer
                 Transfer selectedTransfer = checkForAccount(transfers,(long)menuSelection);
                 System.out.println(selectedTransfer.toString());
             }
@@ -111,7 +111,7 @@ public class App {
 	}
 
 	private void viewPendingRequests() {
-		// TODO Auto-generated method stub
+		// TODO Get all pending request
 		Transfer[] pendingTransfers = accountService.getPendingTransfers();
         if (pendingTransfers != null) {
             System.out.println("Pending transfers for user: " + currentUser.getUser().getUsername());
@@ -119,10 +119,10 @@ public class App {
                 printPendingTransfer(transfer);
             }
             int menuSelection = consoleService.promptForInt("Please enter transfer ID to view details (0 to cancel): ");
-            if (menuSelection != 0) {
+            if (menuSelection != 0) { //Show details of pending transfer
                 Transfer selectedTransfer = checkForAccount(pendingTransfers, (long) menuSelection);
                 System.out.println(selectedTransfer.toString());
-                if (selectedTransfer.getFromUser().getUsername().equals(currentUser.getUser().getUsername())) {
+                if (selectedTransfer.getFromUser().getUsername().equals(currentUser.getUser().getUsername())) { //allow approval of request
                     System.out.println("1. Approve\n2. Reject\n0. Don't approve or reject");
                     menuSelection = consoleService.promptForMenuSelection("Please choose an option: ");
                     switch (menuSelection) {
@@ -162,9 +162,9 @@ public class App {
             }
         }
 	}
-
+    //Sending money to another account
 	private void sendBucks() {
-		// COMPLETE Auto-generated method stub
+		// COMPLETE
         User userSelection = null;
         BigDecimal amountToTransfer = null;
         int menuSelection = -1;
@@ -172,7 +172,7 @@ public class App {
             if (userSelection == null) { // User not selected yet
                 printAllUsers();
                 menuSelection = consoleService.promptForInt("Select user ID (0 to cancel.): ");
-                if (menuSelection != 0) {
+                if (menuSelection != 0) { //Select use check
                     try {
                         userSelection = getValidatedUserId((long) menuSelection);
                     } catch (AccountServiceException e) {
@@ -184,16 +184,16 @@ public class App {
                 }
             }
             amountToTransfer = consoleService.promptForBigDecimal("Enter amount to transfer: ");
-            if (amountToTransfer != null) {
+            if (amountToTransfer != null) { // Confirm value is not blank
                 try {
-                    checkValidTransferAmount(amountToTransfer);
+                    checkValidTransferAmount(amountToTransfer); //Confirm amount is valid
                 } catch (AccountServiceException e) {
                     consoleService.printErrorMessage(e.getMessage());
                     BasicLogger.log(e.getMessage());
                 }
                 Transfer transfer =
                         new Transfer(currentUser.getUser(), userSelection, TransferType.SEND,
-                                TransferStatus.APPROVED, amountToTransfer);
+                                TransferStatus.APPROVED, amountToTransfer); //Approve send money
                 Transfer returnedTransfer = accountService.createTransfer(transfer);
                 if (returnedTransfer != null) {
                     System.out.println("Successfully created transfer. ID: " + returnedTransfer.getTransferId());
@@ -205,7 +205,7 @@ public class App {
 	}
 
 	private void requestBucks() {
-		// TODO Auto-generated method stub
+		// TODO Call to another user to request money
         User userSelection = null;
         BigDecimal amountToTransfer = null;
         int menuSelection = -1;
@@ -224,11 +224,11 @@ public class App {
                     continue;
                 }
             }
-            amountToTransfer = consoleService.promptForBigDecimal("Enter amount to transfer: ");
+            amountToTransfer = consoleService.promptForBigDecimal("Enter amount to transfer: "); //Request amount from user
             if (amountToTransfer != null && amountToTransfer.compareTo(new BigDecimal(0)) > 0) {
                 Transfer transfer =
                         new Transfer(userSelection, currentUser.getUser(), TransferType.REQUEST,
-                                TransferStatus.PENDING, amountToTransfer);
+                                TransferStatus.PENDING, amountToTransfer); //Pending transfer request sent to user
                 Transfer returnedTransfer = accountService.createTransfer(transfer);
                 if (returnedTransfer != null) {
                     System.out.println("Successfully created transfer. ID: " + returnedTransfer.getTransferId());
@@ -238,7 +238,7 @@ public class App {
         }
 		
 	}
-
+    //Get all accounts
     private void printAllUsers() {
         User[] users = accountService.getUsers();
         if (users != null) {
@@ -250,7 +250,7 @@ public class App {
             }
         }
     }
-
+    //Print the information of a transfer
     private void printTransferInfo(Transfer transfer)
     {
         if(transfer.getFromUser().getUsername().equals(currentUser.getUser().getUsername())) {
@@ -261,12 +261,12 @@ public class App {
                     " From: " + transfer.getFromUser().getUsername() + " Amount: " + transfer.getAmount());
         }
     }
-
+    //Print out pending transfer information
     private void printPendingTransfer(Transfer transfer) {
         System.out.println("Transfer Id: " + transfer.getTransferId() +
                 " Requester: " + transfer.getToUser().getUsername() + " Amount: " + transfer.getAmount());
     }
-
+    //Get the ID of a user
     private User getValidatedUserId(Long id) throws AccountServiceException {
         User user = null;
         user = accountService.getUserById(id);
@@ -278,7 +278,7 @@ public class App {
         }
         return user;
     }
-
+    //Makes sure money is in account and not going below 0
     private void checkValidTransferAmount(BigDecimal transferAmount) throws AccountServiceException {
         BigDecimal userBalance = null;
         if (transferAmount.compareTo(new BigDecimal(0)) <= 0) {
@@ -293,7 +293,7 @@ public class App {
             throw new AccountServiceException("Unable to retrieve balance.");
         }
     }
-
+    //Double checks account exist
     private Transfer checkForAccount(Transfer[] transfers, Long id)
     {
         Transfer selectedTransfer = null;

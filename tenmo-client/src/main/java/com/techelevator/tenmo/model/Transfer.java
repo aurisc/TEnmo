@@ -6,6 +6,8 @@ import com.techelevator.tenmo.services.TransferType;
 import java.math.BigDecimal;
 
 public class Transfer {
+
+    //Transfer model to allow transfer of funds
     private Long transferId;
     private User fromUser;
     private User toUser;
@@ -71,7 +73,7 @@ public class Transfer {
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
-
+    //write out the information of a transfer
     @Override
     public String toString()
     {

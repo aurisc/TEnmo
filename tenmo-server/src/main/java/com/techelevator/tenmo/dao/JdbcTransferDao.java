@@ -26,7 +26,7 @@ public class JdbcTransferDao implements TransferDao
         this.jdbcTemplate = jdbcTemplate;
         this.accountDao = new JdbcAccountDao(jdbcTemplate);
     }
-
+    //Shows all transfers
     @Override
     public Transfer[] getAllTransfers(Long id) {
         List<Transfer> transfer = new ArrayList<Transfer>();
@@ -45,7 +45,7 @@ public class JdbcTransferDao implements TransferDao
         }
         return transfer.toArray(new Transfer[0]);
     }
-
+    //Get all pending transfers
     @Override
     public Transfer[] getPendingTransfers(Long accountId) {
         List<Transfer> transfer = new ArrayList<Transfer>();
@@ -64,7 +64,7 @@ public class JdbcTransferDao implements TransferDao
         }
         return transfer.toArray(new Transfer[0]);
     }
-
+    //get a transfer by the user ID
     @Override
     public Transfer[] getTransferByUserId(Long id) {
         List<Transfer> transfer = null;
@@ -84,7 +84,7 @@ public class JdbcTransferDao implements TransferDao
         }
         return transfer.toArray(new Transfer[0]);
     }
-
+    //Complete the transaction of moving money between accounts
     @Transactional
     public Transfer completeTransfer(Transfer transfer) {
         BigDecimal fromBalance = accountDao.getBalanceById(transfer.getAccountFrom());
@@ -96,7 +96,7 @@ public class JdbcTransferDao implements TransferDao
         transfer.setTransferStatusId(TransferStatus.APPROVED.getStatusId());
         return transfer;
     }
-
+    //Show transfer from its ID
     @Override
     public Transfer getTransferById(Long id) {
         Transfer transfer = null;
@@ -111,14 +111,14 @@ public class JdbcTransferDao implements TransferDao
         }
         return transfer;
     }
-
+    //Update the transfer of an account
     @Override
     public boolean updateTransfer(Transfer transfer) {
         String SQL = "UPDATE transfer SET transfer_status_id= ?  WHERE transfer_id = ?;";
         return jdbcTemplate.update(SQL, transfer.getTransferStatusId(), transfer.getTransferId()) == 1;
     }
 
-
+    //Add a transfer into the database
     @Override
     public Transfer addTransfer(Transfer transfer) {
         String sql = "INSERT INTO transfer (transfer_type_id, transfer_status_id, account_from, account_to, amount) " +
@@ -130,7 +130,7 @@ public class JdbcTransferDao implements TransferDao
         }
         return transfer;
     }
-
+    //Adjust values to transfer class
     private Transfer mapToRowTransfer(SqlRowSet results){
         Transfer transfer = new Transfer();
         transfer.setTransferId(results.getLong("transfer_id"));

@@ -23,7 +23,7 @@ public class AccountService {
     public void setUser(AuthenticatedUser user) {
         this.user = user;
     }
-
+    //returns balance of the current account
     public BigDecimal getBalance() {
         BigDecimal balance = null;
         try {
@@ -35,7 +35,7 @@ public class AccountService {
         }
         return balance;
     }
-
+    //Get all users accounts (do not show balance)
     public User[] getUsers() {
         User[] users = null;
         try {
@@ -47,7 +47,7 @@ public class AccountService {
         }
         return users;
     }
-
+    //Get a user by their ID
     public User getUserById(Long id) {
         User user = null;
         try {
@@ -59,7 +59,7 @@ public class AccountService {
         }
         return user;
     }
-
+    //Create a transfer to be used to send funds
     public Transfer createTransfer(Transfer transfer) {
         HttpEntity<Transfer> entity = makeTransferEntity(transfer);
         Transfer returnedTransfer = null;
@@ -72,7 +72,7 @@ public class AccountService {
         }
         return returnedTransfer;
     }
-
+    //Request the history of all transfers
     public Transfer[] getTransferHistory() {
         Transfer[] transfers = null;
         try {
@@ -85,7 +85,7 @@ public class AccountService {
         }
         return transfers;
     }
-
+    //Show only transfers that = pending
     public Transfer[] getPendingTransfers() {
         Transfer[] pendingTransfers = null;
         try {
@@ -98,7 +98,7 @@ public class AccountService {
         }
         return pendingTransfers;
     }
-
+    //Change transfer information.
     public boolean updateTransfer(Transfer transfer) {
         HttpEntity<Transfer> entity = makeTransferEntity(transfer);
         boolean success = false;
@@ -111,7 +111,7 @@ public class AccountService {
         }
         return success;
     }
-
+    //Auth items that will allow users to access application
     private HttpEntity<Transfer> makeTransferEntity(Transfer transfer) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

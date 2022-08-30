@@ -1,5 +1,5 @@
 package com.techelevator.tenmo.model;
-
+//Handles User information of getting and setting
 public class UserDTO {
 
     private Long id;

@@ -4,7 +4,7 @@ package com.techelevator.tenmo.dao;
 import com.techelevator.tenmo.model.Transfer;
 
 import java.math.BigDecimal;
-
+//Outline DAO for Transfer
 public interface TransferDao {
 
     Transfer[] getAllTransfers(Long id);
