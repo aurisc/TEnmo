@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public class App {
     //Local API to be used
     private static final String API_BASE_URL = "http://localhost:8080/";
-
+    private boolean validTransfer;
     private final ConsoleService consoleService = new ConsoleService();
     private final AuthenticationService authenticationService = new AuthenticationService(API_BASE_URL);
     private final AccountService accountService = new AccountService(API_BASE_URL);
@@ -191,6 +191,8 @@ public class App {
                     consoleService.printErrorMessage(e.getMessage());
                     BasicLogger.log(e.getMessage());
                 }
+                if (validTransfer == true)
+                {
                 Transfer transfer =
                         new Transfer(currentUser.getUser(), userSelection, TransferType.SEND,
                                 TransferStatus.APPROVED, amountToTransfer); //Approve send money
@@ -199,6 +201,8 @@ public class App {
                     System.out.println("Successfully created transfer. ID: " + returnedTransfer.getTransferId());
                     break;
                 }
+                }
+                break;
             }
 
         }
@@ -281,17 +285,23 @@ public class App {
     //Makes sure money is in account and not going below 0
     private void checkValidTransferAmount(BigDecimal transferAmount) throws AccountServiceException {
         BigDecimal userBalance = null;
+        validTransfer = false;
         if (transferAmount.compareTo(new BigDecimal(0)) <= 0) {
+            validTransfer = false;
             throw new AccountServiceException("Amount must be greater than zero.");
         }
         userBalance = accountService.getBalance();
         if (userBalance != null) {
             if (userBalance.compareTo(transferAmount) < 0) {
+                validTransfer = false;
                 throw new AccountServiceException("Insufficient funds.");
+
             }
         } else {
+            validTransfer = false;
             throw new AccountServiceException("Unable to retrieve balance.");
         }
+        validTransfer = true;
     }
     //Double checks account exist
     private Transfer checkForAccount(Transfer[] transfers, Long id)
