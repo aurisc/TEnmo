@@ -9,6 +9,10 @@ import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
 
+/*  Service class used to send HTTP requests to server to access user balance, list users, create transfers, update
+    transfers, and list transfers.
+ */
+
 public class AccountService {
 
     private final String baseUrl;
@@ -24,6 +28,7 @@ public class AccountService {
         this.user = user;
     }
 
+    // Retrieves balance for current user.
     public BigDecimal getBalance() {
         BigDecimal balance = null;
         try {
@@ -36,6 +41,7 @@ public class AccountService {
         return balance;
     }
 
+    // Retrieves list of users registered.
     public User[] getUsers() {
         User[] users = null;
         try {
@@ -48,6 +54,7 @@ public class AccountService {
         return users;
     }
 
+    // Retrieves a specific user by the user id
     public User getUserById(Long id) {
         User user = null;
         try {
@@ -60,6 +67,7 @@ public class AccountService {
         return user;
     }
 
+    // Creates a new transfer based on the Transfer model class
     public Transfer createTransfer(Transfer transfer) {
         HttpEntity<Transfer> entity = makeTransferEntity(transfer);
         Transfer returnedTransfer = null;
@@ -73,6 +81,7 @@ public class AccountService {
         return returnedTransfer;
     }
 
+    // Retrieves full list of transfers for user, sent and received
     public Transfer[] getTransferHistory() {
         Transfer[] transfers = null;
         try {
@@ -86,6 +95,7 @@ public class AccountService {
         return transfers;
     }
 
+    // Retrieves list of transfers for the user, sent and received, with the status of pending
     public Transfer[] getPendingTransfers() {
         Transfer[] pendingTransfers = null;
         try {
@@ -99,6 +109,7 @@ public class AccountService {
         return pendingTransfers;
     }
 
+    // Updates the status of an existing transfer
     public boolean updateTransfer(Transfer transfer) {
         HttpEntity<Transfer> entity = makeTransferEntity(transfer);
         boolean success = false;

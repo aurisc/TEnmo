@@ -5,6 +5,11 @@ import com.techelevator.tenmo.services.TransferType;
 
 import java.math.BigDecimal;
 
+/*
+ * The Transfer model class used in the client application; represents information sent to and from the server when a
+ * transfer is created, retrieved, or updated. Does not contain account information and corresponds with TransferDTO
+ * model class on the server application.
+ */
 public class Transfer {
     private Long transferId;
     private User fromUser;
