@@ -1,5 +1,7 @@
 package com.techelevator.tenmo.model;
-//Handles User information of getting and setting
+/*  User Data Transfer Object, corresponds with User model class on client application. Removes user information other
+    than username and id, so that user password hashes and authorities are not sent in responses.
+ */
 public class UserDTO {
 
     private Long id;

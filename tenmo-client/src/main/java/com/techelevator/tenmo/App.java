@@ -190,8 +190,9 @@ public class App {
                 } catch (AccountServiceException e) {
                     consoleService.printErrorMessage(e.getMessage());
                     BasicLogger.log(e.getMessage());
+                    break;
                 }
-                if (validTransfer == true)
+                if (validTransfer)
                 {
                 Transfer transfer =
                         new Transfer(currentUser.getUser(), userSelection, TransferType.SEND,
@@ -199,6 +200,7 @@ public class App {
                 Transfer returnedTransfer = accountService.createTransfer(transfer);
                 if (returnedTransfer != null) {
                     System.out.println("Successfully created transfer. ID: " + returnedTransfer.getTransferId());
+                    validTransfer = false;
                     break;
                 }
                 }
@@ -209,7 +211,7 @@ public class App {
 	}
 
 	private void requestBucks() {
-		// TODO Call to another user to request money
+		// COMPLETE Call to another user to request money
         User userSelection = null;
         BigDecimal amountToTransfer = null;
         int menuSelection = -1;
@@ -238,6 +240,9 @@ public class App {
                     System.out.println("Successfully created transfer. ID: " + returnedTransfer.getTransferId());
                     break;
                 }
+            } else {
+                System.out.println("Amount must be greater than zero.");
+                break;
             }
         }
 		

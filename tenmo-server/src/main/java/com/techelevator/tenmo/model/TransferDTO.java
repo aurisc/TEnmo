@@ -3,7 +3,9 @@ package com.techelevator.tenmo.model;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
-//Handles Transfer information of getting and setting
+/*  Transfer Data Transfer Object, corresponds with Transfer model class on client Application. Replaces the account id
+    with its corresponding userDTO.
+ */
 public class TransferDTO {
 
     private Long transferId;

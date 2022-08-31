@@ -27,12 +27,8 @@ public class AccountService {
     public void setUser(AuthenticatedUser user) {
         this.user = user;
     }
-<<<<<<< HEAD
 
-    // Retrieves balance for current user.
-=======
     //returns balance of the current account
->>>>>>> 7f8fadbb673312e81fd0be8206ac0070f5a817de
     public BigDecimal getBalance() {
         BigDecimal balance = null;
         try {
@@ -44,12 +40,8 @@ public class AccountService {
         }
         return balance;
     }
-<<<<<<< HEAD
 
-    // Retrieves list of users registered.
-=======
     //Get all users accounts (do not show balance)
->>>>>>> 7f8fadbb673312e81fd0be8206ac0070f5a817de
     public User[] getUsers() {
         User[] users = null;
         try {
@@ -61,12 +53,8 @@ public class AccountService {
         }
         return users;
     }
-<<<<<<< HEAD
 
-    // Retrieves a specific user by the user id
-=======
     //Get a user by their ID
->>>>>>> 7f8fadbb673312e81fd0be8206ac0070f5a817de
     public User getUserById(Long id) {
         User user = null;
         try {
@@ -78,12 +66,8 @@ public class AccountService {
         }
         return user;
     }
-<<<<<<< HEAD
 
-    // Creates a new transfer based on the Transfer model class
-=======
     //Create a transfer to be used to send funds
->>>>>>> 7f8fadbb673312e81fd0be8206ac0070f5a817de
     public Transfer createTransfer(Transfer transfer) {
         HttpEntity<Transfer> entity = makeTransferEntity(transfer);
         Transfer returnedTransfer = null;
@@ -96,12 +80,8 @@ public class AccountService {
         }
         return returnedTransfer;
     }
-<<<<<<< HEAD
 
-    // Retrieves full list of transfers for user, sent and received
-=======
     //Request the history of all transfers
->>>>>>> 7f8fadbb673312e81fd0be8206ac0070f5a817de
     public Transfer[] getTransferHistory() {
         Transfer[] transfers = null;
         try {
@@ -114,12 +94,8 @@ public class AccountService {
         }
         return transfers;
     }
-<<<<<<< HEAD
 
-    // Retrieves list of transfers for the user, sent and received, with the status of pending
-=======
     //Show only transfers that = pending
->>>>>>> 7f8fadbb673312e81fd0be8206ac0070f5a817de
     public Transfer[] getPendingTransfers() {
         Transfer[] pendingTransfers = null;
         try {
@@ -132,12 +108,8 @@ public class AccountService {
         }
         return pendingTransfers;
     }
-<<<<<<< HEAD
 
     // Updates the status of an existing transfer
-=======
-    //Change transfer information.
->>>>>>> 7f8fadbb673312e81fd0be8206ac0070f5a817de
     public boolean updateTransfer(Transfer transfer) {
         HttpEntity<Transfer> entity = makeTransferEntity(transfer);
         boolean success = false;
