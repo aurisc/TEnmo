@@ -21,7 +21,7 @@ public class JdbcUserDao implements UserDao {
     public JdbcUserDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
-
+    //Locate ID by the username of an account
     @Override
     public int findIdByUsername(String username) {
         String sql = "SELECT user_id FROM tenmo_user WHERE username ILIKE ?;";
@@ -32,7 +32,7 @@ public class JdbcUserDao implements UserDao {
             return -1;
         }
     }
-
+    //Find the user by ID
     @Override
     public User findById(Long id) {
         String sql = "SELECT user_id, username, password_hash FROM tenmo_user WHERE user_id = ?;";
@@ -46,7 +46,7 @@ public class JdbcUserDao implements UserDao {
         }
         return user;
     }
-
+    //List all users
     @Override
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
@@ -58,7 +58,7 @@ public class JdbcUserDao implements UserDao {
         }
         return users;
     }
-
+    //Find account by the username of account
     @Override
     public User findByUsername(String username) throws UsernameNotFoundException {
         String sql = "SELECT user_id, username, password_hash FROM tenmo_user WHERE username ILIKE ?;";
@@ -68,7 +68,6 @@ public class JdbcUserDao implements UserDao {
         }
         throw new UsernameNotFoundException("User " + username + " was not found.");
     }
-
     @Override
     public boolean create(String username, String password) {
 
@@ -92,7 +91,7 @@ public class JdbcUserDao implements UserDao {
 
         return true;
     }
-
+    //Map to user values
     private User mapRowToUser(SqlRowSet rs) {
         User user = new User();
         user.setId(rs.getLong("user_id"));

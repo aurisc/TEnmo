@@ -1,5 +1,5 @@
 package com.techelevator.tenmo.model;
-
+//Handles enum values for status of accounts sending and receiving
 public enum TransferStatus {
 
     PENDING  ((long)1),

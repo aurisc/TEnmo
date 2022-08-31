@@ -1,7 +1,7 @@
 package com.techelevator.tenmo.model;
 
 import java.math.BigDecimal;
-
+//Handles Transfer information of getting and setting
 public class Transfer {
 
     private Long transferId;

@@ -1,7 +1,7 @@
 package com.techelevator.tenmo.model;
 
 public class AuthenticatedUser {
-	
+	//Set AuthenticatedUser
 	private String token;
 	private User user;
 	

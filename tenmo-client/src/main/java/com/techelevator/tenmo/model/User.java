@@ -1,7 +1,7 @@
 package com.techelevator.tenmo.model;
 
 public class User {
-
+    //User model to all user to become an object
     private Long id;
     private String username;
 

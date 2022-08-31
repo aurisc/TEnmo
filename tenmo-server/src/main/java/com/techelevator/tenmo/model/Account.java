@@ -2,7 +2,7 @@ package com.techelevator.tenmo.model;
 
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
-
+//Handles all of accounts information of getting and setting
 public class Account {
 
     private Long accountId;

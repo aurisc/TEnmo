@@ -3,7 +3,7 @@ package com.techelevator.tenmo.dao;
 import com.techelevator.tenmo.model.User;
 
 import java.util.List;
-
+//Outline DAO for user
 public interface UserDao {
 
     List<User> findAll();

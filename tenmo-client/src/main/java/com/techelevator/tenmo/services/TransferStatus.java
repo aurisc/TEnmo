@@ -1,7 +1,7 @@
 package com.techelevator.tenmo.services;
 
 public enum TransferStatus {
-
+    //ENUM to be used to keep variables for Pending, Approved, and Rejected separate and easy to call.
     PENDING  ((long)1),
     APPROVED ((long)2),
     REJECTED ((long)3);

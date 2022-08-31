@@ -1,7 +1,7 @@
 package com.techelevator.tenmo.model;
 
 import javax.validation.constraints.NotEmpty;
-
+//Handles Register information of getting and setting
 public class RegisterUserDTO {
 
     @NotEmpty

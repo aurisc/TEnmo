@@ -20,7 +20,7 @@ public class JdbcAccountDao implements AccountDao{
         this.jdbcTemplate = jdbcTemplate;
     }
 
-
+    //Get the balance from database with a SQL statement
     @Override
     public BigDecimal getBalance(String userName) {
         BigDecimal balance = new BigDecimal("0.00");
@@ -32,7 +32,7 @@ public class JdbcAccountDao implements AccountDao{
         }
         return balance;
     }
-
+    //Show balance by an account ID (many to many)
     @Override
     public BigDecimal getBalanceById(Long accountId) {
         BigDecimal balance = null;
@@ -43,7 +43,7 @@ public class JdbcAccountDao implements AccountDao{
         }
         return new BigDecimal(0);
     }
-
+    //Show account information of current user (many to many)
     @Override
     public Account[] getAccountsByUserId(Long userId) {
         List<Account> accountList = new ArrayList<>();
@@ -57,7 +57,7 @@ public class JdbcAccountDao implements AccountDao{
         accounts = accountList.toArray(accounts);
         return accounts;
     }
-    //NEW
+    //Grab account information by the ID
     @Override
     public Account getAccountById(Long accountId) {
         Account account = null;
@@ -68,13 +68,13 @@ public class JdbcAccountDao implements AccountDao{
         }
         return account;
     }
-    //new
+    //Update the balance of an account that is being adjusted
     @Override
     public void updateBalance(Long accountId, BigDecimal amount) {
         String sql = "UPDATE account set balance = ? WHERE account_id = ?";
         jdbcTemplate.update(sql, amount, accountId);
     }
-
+    //Show the user account
     @Override
     public UserDTO getAccountUser(Long id)
     {
@@ -86,7 +86,7 @@ public class JdbcAccountDao implements AccountDao{
         }
         return user;
     }
-
+    //All mappings to different values
     private UserDTO mapRowToUserDTO(SqlRowSet rs) {
         UserDTO user = new UserDTO();
         user.setId(rs.getLong("user_id"));

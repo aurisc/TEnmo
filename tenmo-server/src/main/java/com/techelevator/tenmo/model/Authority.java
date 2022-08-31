@@ -1,7 +1,7 @@
 package com.techelevator.tenmo.model;
 
 import java.util.Objects;
-
+//Handles Authority information of getting and setting
 public class Authority {
 
    private String name;

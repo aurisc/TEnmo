@@ -1,5 +1,5 @@
 package com.techelevator.tenmo.model;
-
+//Handles enum values for type of transfer sending and request
 public enum TransferType {
     REQUEST ((long) 1),
     SEND    ((long) 2);
